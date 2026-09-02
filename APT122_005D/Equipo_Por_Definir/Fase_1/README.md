@@ -1,4 +1,4 @@
-# Fase 1 — RUAHTONE
+# Fase 1 — Fix & Go
 
 ## Sección
 
@@ -21,3 +21,6 @@ Número de equipo pendiente de asignación.
 
 Los archivos marcadores indican entregables que todavía deben completarse o incorporarse.
 
+## Estado de actualización
+
+Las tres evidencias individuales de Benjamín Olmedo ya están completas y actualizadas para Fix & Go. Las evidencias de los demás integrantes y los entregables grupales se mantienen pendientes de revisión por el equipo.
