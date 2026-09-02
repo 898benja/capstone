@@ -1,20 +1,17 @@
-# Paquete documental profesional de RUAHTONE
+# Paquete documental profesional de Fix & Go
 
-Versión 1.0 — 12 de agosto de 2026
+Versión 2.0 — 2 de septiembre de 2026
 
-Este paquete transforma la Instrucción Principal oficial de RUAHTONE en documentos profesionales sin agregar funcionalidades al alcance del MVP.
+El paquete presenta la definición oficial consolidada de Fix & Go y reemplaza la documentación del proyecto anterior.
 
 ## Contenido
 
-- `docx/00_RUAHTONE_Indice_Ejecutivo.docx`
-- `docx/01_RUAHTONE_Documento_Maestro_Producto.docx`
-- `docx/02_RUAHTONE_Especificacion_Funcional_MVP.docx`
-- `docx/03_RUAHTONE_Modelo_Dominio_Arquitectura.docx`
-- `docx/04_RUAHTONE_Roadmap_Plan_Validacion.docx`
-- `pdf/00_RUAHTONE_Indice_Ejecutivo.pdf`
-- `pdf/01_RUAHTONE_Documento_Maestro_Producto.pdf`
-- `pdf/02_RUAHTONE_Especificacion_Funcional_MVP.pdf`
-- `pdf/03_RUAHTONE_Modelo_Dominio_Arquitectura.pdf`
-- `pdf/04_RUAHTONE_Roadmap_Plan_Validacion.pdf`
+- `docx/00_FIX_AND_GO_Indice_Ejecutivo.docx`
+- `docx/01_FIX_AND_GO_Documento_Maestro_Producto.docx`
+- `docx/02_FIX_AND_GO_Especificacion_Funcional_MVP.docx`
+- `docx/03_FIX_AND_GO_Modelo_Dominio_Arquitectura.docx`
+- `docx/04_FIX_AND_GO_Roadmap_Plan_Validacion.docx`
+- sus versiones PDF equivalentes en `pdf/`;
+- `presentation/FIX_AND_GO_Fase_1_Propuesta_Producto.pptx`.
 
-Los archivos Word son editables. Los PDF son las versiones revisadas para distribución.
+Los Word son editables; los PDF se generan desde los Word revisados. Las cifras comerciales se presentan como supuestos y los datos de mercado sin fuente quedan pendientes de validación.

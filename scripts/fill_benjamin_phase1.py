@@ -183,9 +183,9 @@ def fill_12(template: Path, output: Path):
     add_response(
         doc.tables[5].cell(1, 0),
         [
-            "La propuesta trabajada anteriormente requiere un cambio, porque ya no representa de manera suficiente nuestras proyecciones profesionales actuales. El nuevo proyecto se llama Fix & Go y se orienta al desarrollo de una aplicación móvil para conectar a personas que necesitan resolver un problema con profesionales cercanos capaces de prestar el servicio.",
-            "El proyecto debe abordar desarrollo móvil, experiencia de usuario, análisis de requerimientos, modelos de datos, seguridad, pruebas y gestión de proyectos. Su contexto será el mercado de servicios locales, donde muchas contrataciones todavía dependen de recomendaciones informales, publicaciones dispersas y poca información sobre disponibilidad o confianza.",
-            "Fix & Go puede aportar a mi desarrollo profesional porque combina mi interés por construir interfaces móviles con mi proyección como director y dueño de productos tecnológicos. Mi aporte inicial estará enfocado en frontend, prototipado y experiencia de usuario. La distribución definitiva de backend, datos y calidad será acordada entre Benjamín Olmedo, Daniel Baeza y Felipe Arce según las fortalezas de cada integrante.",
+            "La propuesta vigente se llama Fix & Go. Es una plataforma web y móvil para conectar a personas que necesitan resolver servicios técnicos del hogar con profesionales cercanos y verificables. La entrada del proyecto se concentra en gas, electricidad y agua; otras categorías quedan como expansión posterior a la validación.",
+            "El producto completo considera perfiles diferenciados, validación de credenciales, búsqueda, solicitudes, cotizaciones, mensajería interna, pagos seguros, seguimiento y reputación. Para APT122 construiremos un MVP con datos ficticios e integraciones sensibles simuladas, de forma que podamos probar el recorrido sin procesar dinero, documentos o direcciones reales.",
+            "Fix & Go aporta a mi desarrollo profesional porque combina frontend móvil y web, experiencia de usuario, análisis, arquitectura, seguridad, pruebas y gestión. Mi aporte inicial se enfocará en frontend, prototipado y consistencia de la experiencia. La distribución definitiva de backend, datos y calidad se acordará con Daniel Baeza y Felipe Arce según las fortalezas de cada integrante.",
         ],
     )
 
@@ -200,18 +200,18 @@ def fill_13(path: Path):
     replacements = {
         4: "FIX & GO",
         9: (
-            "Fix & Go es una propuesta de aplicación móvil que conecta a personas que necesitan resolver trabajos cotidianos con profesionales disponibles en zonas cercanas. El proyecto responde a un proceso de contratación fragmentado entre recomendaciones, redes sociales, publicaciones aisladas y contactos sin información comparable sobre especialidad, cobertura, disponibilidad o reputación. El MVP permitirá seleccionar una categoría, buscar profesionales por ubicación, revisar perfiles, crear una solicitud, aceptar o rechazar el trabajo, consultar su estado y registrar una valoración. La primera versión académica utilizará datos de demostración y un flujo controlado; pagos integrados, chat en tiempo real, verificación documental y geolocalización productiva quedarán fuera del alcance inicial. El trabajo se desarrollará de forma incremental, con requisitos versionados, prototipos, control de versiones, pruebas y validación con usuarios potenciales. La evidencia permitirá evaluar si el flujo facilita encontrar y solicitar ayuda profesional de manera más clara, rápida y confiable."
+            "Fix & Go es una plataforma web y móvil que conecta a personas que necesitan servicios técnicos del hogar con profesionales cercanos y verificables. El proyecto responde a una contratación fragmentada entre recomendaciones, redes sociales y contactos con poca información comparable sobre especialidad, credenciales, cobertura, disponibilidad, precio o reputación. La entrada se concentra en gas, electricidad y agua. El MVP académico permitirá buscar, revisar perfiles, crear una solicitud, comparar cotizaciones, seguir un servicio y registrar una valoración. Verificación documental, mensajería, pagos y geolocalización se representarán mediante datos ficticios y simulaciones explícitas. El trabajo será incremental, con requisitos versionados, prototipos, control de cambios, pruebas y validación con usuarios potenciales. La evidencia permitirá evaluar si el recorrido mejora la claridad, confianza y trazabilidad del proceso actual."
         ),
-        10: "Palabras clave: servicios locales, profesionales, aplicación móvil, geolocalización, marketplace, experiencia de usuario.",
+        10: "Palabras clave: servicios técnicos, profesionales verificados, aplicación móvil, plataforma web, marketplace, experiencia de usuario.",
         12: (
-            "Fix & Go is a mobile application proposal that connects people who need everyday services with professionals available in nearby areas. The project addresses a fragmented hiring process based on personal referrals, social media posts, isolated listings, and contacts with little comparable information about expertise, coverage, availability, or reputation. The MVP will allow users to select a category, search by location, review professional profiles, create a service request, accept or reject a job, track its basic status, and submit a rating. The academic version will use demo data and a controlled end-to-end flow; integrated payments, real-time chat, document verification, and production-grade geolocation will remain outside the initial scope. The team will work incrementally through versioned requirements, prototypes, source control, testing, and validation with potential users. The collected evidence will determine whether the proposed flow makes local professional services easier, faster, and more trustworthy to request."
+            "Fix & Go is a web and mobile platform that connects people who need home technical services with nearby, verifiable professionals. The project addresses a fragmented hiring process based on referrals, social media, and contacts with little comparable information about expertise, credentials, coverage, availability, price, or reputation. The initial categories are gas, electricity, and water. The academic MVP will cover discovery, profiles, service requests, quote comparison, job tracking, and reviews. Credential verification, messaging, payments, and production geolocation will be represented through fictional data and clearly labelled simulations. The team will work incrementally through versioned requirements, prototypes, source control, testing, and validation with potential users. The evidence will assess whether the flow improves clarity, trust, and traceability."
         ),
-        13: "Keywords: local services, professionals, mobile application, geolocation, marketplace, user experience.",
+        13: "Keywords: technical services, verified professionals, mobile application, web platform, marketplace, user experience.",
         15: (
-            "Fix & Go propone centralizar la búsqueda y contratación inicial de profesionales para trabajos cercanos, como reparaciones, mantenciones o servicios técnicos. Actualmente, muchas personas dependen de recomendaciones informales o publicaciones dispersas, lo que dificulta comparar perfiles, conocer la zona de cobertura, confirmar disponibilidad y mantener trazabilidad sobre una solicitud."
+            "Fix & Go propone centralizar la búsqueda y contratación de profesionales para servicios de gas, electricidad y agua. Actualmente, muchas personas dependen de recomendaciones informales o publicaciones dispersas, lo que dificulta comparar perfiles, verificar credenciales, conocer cobertura y disponibilidad, entender el precio y mantener trazabilidad sobre el servicio."
         ),
         16: (
-            "La solución considera tres actores principales: el cliente crea y consulta solicitudes; el profesional configura su perfil, categorías y cobertura, y responde a oportunidades; y un rol administrativo supervisa categorías y reportes básicos. El flujo central parte con la necesidad del cliente y termina con una solicitud aceptada, seguimiento de estado y valoración."
+            "La solución considera tres actores principales: el cliente busca, solicita, contrata y evalúa; el profesional administra perfil, credenciales, cobertura, cotizaciones y trabajos; y el administrador revisa verificaciones, incidentes y auditoría. El flujo parte con la necesidad y termina con el cierre, pago representado y evaluación verificable."
         ),
         17: (
             "La propuesta es relevante para la informática porque integra análisis de requerimientos, experiencia móvil, arquitectura, modelado de datos, seguridad y privacidad, desarrollo de interfaces, integración, control de versiones y pruebas. Además, permite aplicar gestión de proyectos e innovación a un producto digital con posibilidad de evolución comercial (Duoc UC, s.f.)."
@@ -223,12 +223,12 @@ def fill_13(path: Path):
             "Mi aporte individual: Lideraré principalmente el frontend móvil, el prototipado y la consistencia de la experiencia de usuario. También aportaré creatividad, organización del trabajo, comunicación en inglés técnico y coordinación de decisiones. La asignación definitiva de backend, datos y calidad se acordará con Daniel Baeza y Felipe Arce según las fortalezas de cada integrante."
         ),
         26: (
-            "Fix & Go es factible si el equipo limita la primera entrega al flujo esencial de descubrimiento y solicitud. Los tres integrantes cuentan con computadores, acceso a GitHub y experiencia académica en desarrollo de software y trabajo colaborativo. El MVP podrá utilizar herramientas gratuitas y datos ficticios, evitando pagos reales y almacenamiento de documentos sensibles. La construcción incremental permitirá validar primero el problema, después la experiencia móvil y finalmente la integración del flujo completo."
+            "Fix & Go es factible si el equipo limita la primera entrega al recorrido esencial y simula las integraciones de mayor riesgo. Los tres integrantes cuentan con computadores, GitHub y experiencia académica en desarrollo y colaboración. El MVP usará datos ficticios y no procesará pagos, credenciales ni direcciones reales. La construcción incremental permitirá validar primero el problema, luego la experiencia web/móvil y finalmente la coherencia del flujo completo."
         ),
-        29: "Objetivo general. Diseñar, construir y validar durante APT122 un MVP móvil de Fix & Go que permita descubrir profesionales cercanos, revisar sus perfiles y gestionar una solicitud de servicio mediante una experiencia simple, coherente y trazable.",
+        29: "Objetivo general. Diseñar, construir y validar durante APT122 un MVP web y móvil de Fix & Go que represente la búsqueda, contratación y seguimiento de profesionales verificados para gas, electricidad y agua mediante una experiencia simple, segura en su simulación y trazable.",
         30: "Objetivo específico 1. Levantar y formalizar las necesidades de clientes y profesionales, definiendo actores, reglas, estados, riesgos y criterios de aceptación para el flujo principal.",
-        31: "Objetivo específico 2. Modelar una arquitectura y un conjunto de datos escalables para usuarios, perfiles profesionales, categorías, zonas de cobertura, solicitudes, estados y valoraciones.",
-        32: "Objetivo específico 3. Implementar una experiencia móvil accesible para buscar por categoría y cercanía, consultar perfiles, crear una solicitud, responderla y observar su estado.",
+        31: "Objetivo específico 2. Modelar arquitectura y datos escalables para usuarios, credenciales, categorías, cobertura, solicitudes, cotizaciones, servicios, pagos simulados y valoraciones.",
+        32: "Objetivo específico 3. Implementar una experiencia web y móvil accesible para buscar, comparar perfiles, solicitar, cotizar, seguir el servicio y evaluar.",
         33: "Objetivo específico 4. Evaluar el MVP mediante pruebas funcionales, revisión de interfaz y sesiones con usuarios potenciales, utilizando los hallazgos para priorizar mejoras.",
         35: "Se utilizará una metodología incremental y colaborativa, apoyada en prácticas de Scrum adaptadas al contexto académico. Cada ciclo comenzará con un objetivo y criterios de aceptación, continuará con diseño e implementación, y terminará con verificación, evidencia y ajuste (Schwaber & Sutherland, 2020).",
         36: "Descubrir y validar necesidades mediante entrevistas breves a personas que contratan servicios y a profesionales independientes.",
@@ -237,20 +237,20 @@ def fill_13(path: Path):
         39: "Construir incrementos pequeños en ramas separadas, revisados mediante pull request antes de integrarlos a main.",
         40: "Verificar componentes y flujos críticos; revisar accesibilidad, adaptación a pantallas, consistencia de datos, privacidad y manejo de errores.",
         41: "Validar con usuarios potenciales, registrar éxito, tiempos, dudas y errores, y priorizar mejoras por impacto y frecuencia.",
-        44: "Recursos transversales: computadores personales, GitHub, entorno de desarrollo móvil, documentación del proyecto, datos de demostración e instrumentos de prueba. La elección final del stack y la distribución de backend, datos y calidad se acordarán entre los tres integrantes antes de comenzar la implementación.",
+        44: "Recursos transversales: computadores personales, GitHub, entornos de desarrollo web y móvil, documentación, datos de demostración e instrumentos de prueba. La elección final del stack y la distribución de backend, datos y calidad se acordarán entre los tres integrantes antes de implementar.",
         48: "La definición incorpora los indicadores 1.1, 1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2 y 4.3. En esta fase se evidencia principalmente el diseño de pruebas, la planificación, el modelo escalable y la arquitectura de integración. La implementación, el control y la validación se demostrarán progresivamente mediante GitHub, el MVP y los reportes del equipo.",
         49: "Pruebas: estrategia para búsqueda, perfiles, creación de solicitudes, respuesta, estados y manejo de errores.",
         50: "Gestión: roadmap incremental, backlog, definición de terminado, GitHub y seguimiento de riesgos.",
-        51: "Datos: usuarios, profesionales, categorías, cobertura, solicitudes, estados y valoraciones con relaciones coherentes.",
-        52: "Desarrollo: frontend móvil, lógica de aplicación, dominio e infraestructura integrados mediante interfaces y servicios definidos.",
+        51: "Datos: usuarios, profesionales, credenciales, categorías, cobertura, solicitudes, cotizaciones, servicios y valoraciones con relaciones coherentes.",
+        52: "Desarrollo: frontend web/móvil, lógica de aplicación, dominio e infraestructura integrados mediante interfaces y adaptadores definidos.",
         57: (
-            "Fix & Go is a relevant and feasible Capstone project because it addresses a common local-services problem through a clearly bounded mobile MVP. The proposal connects user needs with project management, data modeling, software development, privacy, and validation practices. Its strongest point is the end-to-end flow from discovering a nearby professional to creating and tracking a service request. The next stage must validate the assumptions with clients and professionals, agree on the team responsibilities, select the technical stack, and transform the specification into a tested prototype."
+            "Fix & Go is a relevant and feasible Capstone project because it addresses a common technical-services problem through a bounded web and mobile MVP. The proposal connects trust, project management, data modeling, software development, privacy, security, and validation. Its strongest point is the traceable flow from discovering a verifiable professional to closing and reviewing a service. The next stage must validate assumptions with clients and professionals, agree on responsibilities, select the stack, and transform the specification into a tested prototype."
         ),
         59: (
             "This self-assessment connected my strengths in software development, creativity, teamwork, project management, and English with my goal of becoming a technology founder. Fix & Go lets me begin with frontend development while learning to manage scope and coordinate a growing product. I must strengthen architecture, automated testing, and security. In the next phase, I will lead the mobile interface, document decisions, and help define responsibilities with Daniel and Felipe."
         ),
         62: "Duoc UC. (s.f.). Descripción del perfil de egreso: Ingeniería en Informática [Documento académico].",
-        63: "Fix & Go. (2026). Definición inicial del Proyecto APT [Documento de trabajo no publicado].",
+        63: "Fix & Go. (2026). Fuente oficial consolidada del Proyecto APT [Documento interno].",
         64: "Schwaber, K., & Sutherland, J. (2020). The Scrum Guide. Scrum Guides.",
         65: "",
         66: "",
@@ -265,21 +265,21 @@ def fill_13(path: Path):
         (2, 1, "APT122 · Proyecto APT"),
         (3, 1, "005D"),
         (4, 1, "Fix & Go"),
-        (5, 1, "1 de septiembre de 2026"),
+        (5, 1, "2 de septiembre de 2026"),
     ]
     for row, col, text in identification:
         replace_paragraph(doc.tables[1].cell(row, col).paragraphs[0], text)
 
     replace_paragraph(
         doc.tables[2].cell(0, 0).paragraphs[-1],
-        "El alcance evaluable es un MVP móvil del flujo buscar → revisar perfil → solicitar → responder → seguir estado. Pagos, chat en tiempo real, verificación documental, geolocalización productiva y operación comercial quedan como evolución posterior.",
+        "El alcance evaluable es un MVP web y móvil del flujo buscar → revisar perfil → solicitar → cotizar → seguir servicio → evaluar. Pagos, mensajería, verificación y geolocalización se simulan con datos ficticios; la operación comercial real queda para una etapa posterior.",
     )
 
     competency_rows = [
-        ("Pruebas y certificación", "1.1 y 1.3", "Diseñar pruebas del flujo de búsqueda, solicitud y respuesta, y convertir los hallazgos en mejoras priorizadas."),
+        ("Pruebas y certificación", "1.1 y 1.3", "Diseñar pruebas del recorrido de búsqueda, cotización, servicio y evaluación, y convertir hallazgos en mejoras."),
         ("Gestión de proyectos informáticos", "2.1 y 2.2", "Planificar alcance, responsables, recursos, riesgos e hitos; controlar el avance con evidencia versionada."),
-        ("Modelos de datos escalables", "3.1 y 3.2", "Diseñar entidades y relaciones para clientes, profesionales, categorías, cobertura, solicitudes, estados y valoraciones."),
-        ("Desarrollo de soluciones", "4.1, 4.2 y 4.3", "Construir e integrar una experiencia móvil coherente mediante técnicas sistemáticas de desarrollo y mantenimiento."),
+        ("Modelos de datos escalables", "3.1 y 3.2", "Diseñar entidades para usuarios, credenciales, solicitudes, cotizaciones, servicios, pagos y valoraciones."),
+        ("Desarrollo de soluciones", "4.1, 4.2 y 4.3", "Construir e integrar experiencias web y móvil mediante técnicas sistemáticas de desarrollo y mantenimiento."),
     ]
     replace_paragraph(doc.tables[3].cell(0, 2).paragraphs[0], "Aplicación en Fix & Go")
     for row_index, values in enumerate(competency_rows, start=1):
@@ -290,7 +290,7 @@ def fill_13(path: Path):
         ("Tiempo", "Plan semestral por fases; priorización del flujo central antes de módulos secundarios."),
         ("Materiales", "Tres computadores, GitHub, herramientas gratuitas de diseño y desarrollo móvil, y datos de demostración."),
         ("Factores externos", "Disponibilidad de clientes y profesionales independientes para entrevistas y validación."),
-        ("Riesgo de alcance", "Excluir pagos, chat en tiempo real, verificación documental y operación comercial durante el MVP."),
+        ("Riesgo de alcance", "Simular pagos, mensajería, verificación y geolocalización; excluir operación comercial real."),
         ("Riesgo técnico y privacidad", "Prototipo temprano, permisos mínimos, datos ficticios, revisión por pares y pruebas incrementales."),
         ("Riesgo de coordinación", "Definir responsabilidades, mantener backlog visible, usar ramas y revisar cambios antes de integrarlos."),
     ]
@@ -300,10 +300,10 @@ def fill_13(path: Path):
 
     plan = [
         ("1. Definición", "Semanas 1-3", "Problema, usuarios, alcance y criterios", "Equipo completo", "Idea inicial y perfil de egreso", "Supuestos sin validar"),
-        ("2. Producto y UX", "Semanas 4-5", "Flujos, navegación y prototipo móvil", "Benjamín lidera frontend; equipo valida", "Referencias móviles y entrevistas", "Flujo demasiado amplio"),
+        ("2. Producto y UX", "Semanas 4-5", "Flujos y prototipo web/móvil", "Benjamín lidera frontend; equipo valida", "Referencias y entrevistas", "Flujo demasiado amplio"),
         ("3. Arquitectura y datos", "Semanas 6-7", "Stack, modelo, repositorios y datos demo", "Distribución técnica por acordar", "GitHub y documentación", "Decisiones técnicas tardías"),
-        ("4. Flujo vertical", "Semanas 8-10", "Búsqueda, perfil, solicitud y respuesta", "Desarrollo compartido", "Criterios de aceptación", "Integración de estado y ubicación"),
-        ("5. Seguimiento", "Semanas 11-12", "Estados, historial y valoración", "Desarrollo compartido", "Flujo principal operativo", "Notificaciones simuladas"),
+        ("4. Flujo vertical", "Semanas 8-10", "Búsqueda, perfil, solicitud y cotización", "Desarrollo compartido", "Criterios de aceptación", "Integración de estados"),
+        ("5. Seguimiento", "Semanas 11-12", "Servicio, mensajes y valoración simulados", "Desarrollo compartido", "Flujo principal operativo", "Integraciones simuladas"),
         ("6. Calidad", "Semanas 13-14", "Pruebas, accesibilidad y correcciones", "Equipo completo", "Datos demo y checklist", "Tiempo de corrección limitado"),
         ("7. Validación", "Semanas 15-16", "Sesiones, resultados y presentación", "Equipo completo", "Acceso a usuarios potenciales", "Disponibilidad de participantes"),
     ]
@@ -314,7 +314,7 @@ def fill_13(path: Path):
     evidence = [
         ("Especificación del producto", "Problema, usuarios, requisitos, dominio, UX y decisiones", "Demuestra definición disciplinar y trazabilidad antes de construir."),
         ("Repositorio GitHub", "Commits, ramas, revisiones y documentación versionada", "Demuestra colaboración, control de cambios y evolución del producto."),
-        ("Prototipo/MVP móvil", "Flujo de búsqueda y solicitud ejecutable", "Evidencia integración de componentes y cumplimiento funcional."),
+        ("Prototipo/MVP web y móvil", "Flujo de contratación ejecutable", "Evidencia integración de componentes y cumplimiento funcional."),
         ("Plan y tablero de trabajo", "Actividades, responsables, hitos, riesgos y estado", "Permite controlar avance y justificar decisiones de alcance."),
         ("Pruebas y reportes", "Casos automatizados, checklist manual e incidencias", "Demuestra verificación y mejoras basadas en resultados."),
         ("Registro de validación", "Tareas, tiempos, éxito, dudas y comentarios", "Contrasta la propuesta con clientes y profesionales potenciales."),
@@ -361,7 +361,10 @@ def fill_13(path: Path):
     doc.core_properties.subject = "APT122 - Evidencia individual 1.3"
     doc.core_properties.author = "Benjamín Olmedo"
     doc.core_properties.keywords = "APT122, Proyecto APT, Fix & Go, autoevaluación, fase 1"
-    doc.core_properties.comments = "Documento individual de Benjamín Olmedo basado en la definición inicial de Fix & Go."
+    doc.core_properties.comments = "Documento individual de Benjamín Olmedo basado en la definición oficial consolidada de Fix & Go."
+    while doc.paragraphs and not doc.paragraphs[-1].text.strip():
+        paragraph = doc.paragraphs[-1]
+        paragraph._element.getparent().remove(paragraph._element)
     doc.save(path)
 
 

@@ -1,123 +1,75 @@
 from pathlib import Path
-from datetime import date
+
 from docx import Document
-from docx.shared import Inches, Pt, RGBColor
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
-from docx.enum.section import WD_SECTION
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docx.shared import Inches, Pt, RGBColor
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output" / "docx"
 OUT.mkdir(parents=True, exist_ok=True)
 
-BLUE = "3157D5"
-PURPLE = "7651C9"
-INK = "172033"
-MUTED = "667085"
-LIGHT = "F4F6FC"
-LAVENDER = "EEEAFB"
+NAVY = "102A43"
+YELLOW = "F6C445"
+INK = "172B3A"
+MUTED = "52606D"
+PALE = "FFF8E6"
+LIGHT = "F2F5F7"
 WHITE = "FFFFFF"
-BORDER = "D7DCEC"
-TODAY = "12 de agosto de 2026"
+DATE = "2 de septiembre de 2026"
+TEAM = "Benjamín Olmedo · Daniel Baeza · Felipe Arce"
 
 
-def set_cell_shading(cell, fill):
-    tc_pr = cell._tc.get_or_add_tcPr()
-    shd = tc_pr.find(qn("w:shd"))
-    if shd is None:
-        shd = OxmlElement("w:shd")
-        tc_pr.append(shd)
-    shd.set(qn("w:fill"), fill)
+def shade(cell, color):
+    props = cell._tc.get_or_add_tcPr()
+    node = props.find(qn("w:shd"))
+    if node is None:
+        node = OxmlElement("w:shd")
+        props.append(node)
+    node.set(qn("w:fill"), color)
 
 
-def set_cell_margins(cell, top=100, start=120, bottom=100, end=120):
-    tc = cell._tc
-    tc_pr = tc.get_or_add_tcPr()
-    tc_mar = tc_pr.first_child_found_in("w:tcMar")
-    if tc_mar is None:
-        tc_mar = OxmlElement("w:tcMar")
-        tc_pr.append(tc_mar)
-    for margin, value in (("top", top), ("start", start), ("bottom", bottom), ("end", end)):
-        node = tc_mar.find(qn(f"w:{margin}"))
-        if node is None:
-            node = OxmlElement(f"w:{margin}")
-            tc_mar.append(node)
-        node.set(qn("w:w"), str(value))
-        node.set(qn("w:type"), "dxa")
+def margins(cell, value=110):
+    props = cell._tc.get_or_add_tcPr()
+    node = props.first_child_found_in("w:tcMar")
+    if node is None:
+        node = OxmlElement("w:tcMar")
+        props.append(node)
+    for name in ("top", "start", "bottom", "end"):
+        edge = node.find(qn(f"w:{name}"))
+        if edge is None:
+            edge = OxmlElement(f"w:{name}")
+            node.append(edge)
+        edge.set(qn("w:w"), str(value))
+        edge.set(qn("w:type"), "dxa")
 
 
-def set_cell_width(cell, dxa):
-    tc_pr = cell._tc.get_or_add_tcPr()
-    tc_w = tc_pr.find(qn("w:tcW"))
-    if tc_w is None:
-        tc_w = OxmlElement("w:tcW")
-        tc_pr.append(tc_w)
-    tc_w.set(qn("w:w"), str(dxa))
-    tc_w.set(qn("w:type"), "dxa")
-
-
-def set_table_geometry(table, widths):
-    table.autofit = False
-    tbl_pr = table._tbl.tblPr
-    tbl_w = tbl_pr.find(qn("w:tblW"))
-    if tbl_w is None:
-        tbl_w = OxmlElement("w:tblW")
-        tbl_pr.append(tbl_w)
-    tbl_w.set(qn("w:w"), str(sum(widths)))
-    tbl_w.set(qn("w:type"), "dxa")
-    tbl_ind = tbl_pr.find(qn("w:tblInd"))
-    if tbl_ind is None:
-        tbl_ind = OxmlElement("w:tblInd")
-        tbl_pr.append(tbl_ind)
-    tbl_ind.set(qn("w:w"), "120")
-    tbl_ind.set(qn("w:type"), "dxa")
-    grid = table._tbl.tblGrid
-    for child in list(grid):
-        grid.remove(child)
-    for width in widths:
-        col = OxmlElement("w:gridCol")
-        col.set(qn("w:w"), str(width))
-        grid.append(col)
-    for row in table.rows:
-        for idx, cell in enumerate(row.cells):
-            set_cell_width(cell, widths[idx])
-            set_cell_margins(cell)
-            cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
-
-
-def set_repeat_table_header(row):
-    tr_pr = row._tr.get_or_add_trPr()
-    tbl_header = OxmlElement("w:tblHeader")
-    tbl_header.set(qn("w:val"), "true")
-    tr_pr.append(tbl_header)
-
-
-def set_font(run, size=10.5, color=INK, bold=False, italic=False, name="Aptos"):
-    run.font.name = name
-    run._element.get_or_add_rPr().rFonts.set(qn("w:ascii"), name)
-    run._element.get_or_add_rPr().rFonts.set(qn("w:hAnsi"), name)
+def font(run, size=10, color=INK, bold=False, italic=False, family="Aptos"):
+    run.font.name = family
+    run._element.get_or_add_rPr().rFonts.set(qn("w:ascii"), family)
+    run._element.get_or_add_rPr().rFonts.set(qn("w:hAnsi"), family)
     run.font.size = Pt(size)
     run.font.color.rgb = RGBColor.from_string(color)
     run.bold = bold
     run.italic = italic
 
 
-def configure_document(title):
+def configure(title):
     doc = Document()
     section = doc.sections[0]
     section.page_width = Inches(8.5)
     section.page_height = Inches(11)
-    section.top_margin = Inches(0.82)
-    section.bottom_margin = Inches(0.78)
-    section.left_margin = Inches(0.88)
-    section.right_margin = Inches(0.88)
-    section.header_distance = Inches(0.35)
-    section.footer_distance = Inches(0.35)
+    section.top_margin = Inches(0.78)
+    section.bottom_margin = Inches(0.72)
+    section.left_margin = Inches(0.82)
+    section.right_margin = Inches(0.82)
+    section.header_distance = Inches(0.3)
+    section.footer_distance = Inches(0.3)
 
-    styles = doc.styles
-    normal = styles["Normal"]
+    normal = doc.styles["Normal"]
     normal.font.name = "Aptos"
     normal._element.rPr.rFonts.set(qn("w:ascii"), "Aptos")
     normal._element.rPr.rFonts.set(qn("w:hAnsi"), "Aptos")
@@ -126,530 +78,434 @@ def configure_document(title):
     normal.paragraph_format.space_after = Pt(4)
     normal.paragraph_format.line_spacing = 1.08
 
-    for style_name, size, color, before, after in (
-        ("Heading 1", 16.5, BLUE, 12, 6),
-        ("Heading 2", 13.2, PURPLE, 9, 5),
-        ("Heading 3", 11.5, INK, 8, 4),
-    ):
-        style = styles[style_name]
+    for name, size, color in (("Heading 1", 17, NAVY), ("Heading 2", 13, NAVY), ("Heading 3", 11, INK)):
+        style = doc.styles[name]
         style.font.name = "Aptos Display"
         style._element.rPr.rFonts.set(qn("w:ascii"), "Aptos Display")
         style._element.rPr.rFonts.set(qn("w:hAnsi"), "Aptos Display")
         style.font.size = Pt(size)
         style.font.bold = True
         style.font.color.rgb = RGBColor.from_string(color)
-        style.paragraph_format.space_before = Pt(before)
-        style.paragraph_format.space_after = Pt(after)
         style.paragraph_format.keep_with_next = True
+        style.paragraph_format.space_before = Pt(10)
+        style.paragraph_format.space_after = Pt(5)
 
-    header = section.header
-    p = header.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-    r = p.add_run("RUAHTONE  /  DOCUMENTACIÓN OFICIAL")
-    set_font(r, 8.5, MUTED, True)
-    footer = section.footer
-    p = footer.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    r = p.add_run(f"{title}  •  {TODAY}")
-    set_font(r, 8, MUTED)
+    header = section.header.paragraphs[0]
+    r = header.add_run("FIX & GO  /  DOCUMENTACIÓN OFICIAL")
+    font(r, 8.2, MUTED, True)
+    footer = section.footer.paragraphs[0]
+    footer.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    r = footer.add_run(f"{title}  •  {DATE}")
+    font(r, 7.8, MUTED)
     return doc
 
 
-def add_cover(doc, kicker, title, subtitle, code, version="Versión 1.0"):
+def cover(doc, title, subtitle, code):
     for _ in range(3):
         doc.add_paragraph()
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_after = Pt(20)
-    r = p.add_run(kicker.upper())
-    set_font(r, 10, PURPLE, True)
+    p.paragraph_format.space_after = Pt(12)
+    r = p.add_run("FIX & GO")
+    font(r, 16, YELLOW, True, family="Aptos Display")
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_after = Pt(8)
     r = p.add_run(title)
-    set_font(r, 30, BLUE, True, name="Aptos Display")
+    font(r, 30, NAVY, True, family="Aptos Display")
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_after = Pt(28)
+    p.paragraph_format.space_after = Pt(24)
     r = p.add_run(subtitle)
-    set_font(r, 15, INK)
-    add_callout(doc, "PROPÓSITO", "Fuente profesional para diseñar, construir y validar el MVP frontend local de RUAHTONE.")
+    font(r, 14, INK)
+    callout(doc, "PROPÓSITO", "Fuente profesional para definir, validar y construir Fix & Go sin confundir la visión comercial con el MVP académico.")
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_before = Pt(40)
-    for text, bold in ((f"{code}  •  {version}", True), (f"\n{TODAY}", False), ("\nEstado: Documento oficial del MVP", False)):
-        r = p.add_run(text)
-        set_font(r, 10, MUTED, bold)
+    p.paragraph_format.space_before = Pt(34)
+    r = p.add_run(f"{code}  •  Versión 2.0\n{DATE}\nAPT122-005D  •  Equipo por definir\n{TEAM}")
+    font(r, 9.5, MUTED, True)
     doc.add_page_break()
+    callout(doc, "CONTROL DE FUENTE", "Documento basado en el archivo FIX&GO y la presentación Canva entregados por el equipo. Las cifras sin respaldo se mantienen como hipótesis por validar.", PALE)
 
 
-def add_intro(doc, source_note=True):
-    if source_note:
-        add_callout(doc, "CONTROL DE FUENTE", "Este documento reorganiza exclusivamente la Instrucción Principal RUAHTONE — Master Product & Development Prompt. No agrega funcionalidades al alcance oficial.")
-
-
-def add_callout(doc, label, text, color=BLUE, trailing_space=True):
+def callout(doc, label, text, fill=PALE, trailing=True):
     table = doc.add_table(rows=1, cols=1)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    set_table_geometry(table, [9360])
     cell = table.cell(0, 0)
-    set_cell_shading(cell, LIGHT)
+    shade(cell, fill)
+    margins(cell, 150)
     p = cell.paragraphs[0]
-    p.paragraph_format.space_after = Pt(2)
-    r = p.add_run(label)
-    set_font(r, 8.5, color, True)
-    p = cell.add_paragraph()
-    p.paragraph_format.space_after = Pt(0)
+    r = p.add_run(label + "\n")
+    font(r, 8.2, NAVY, True)
     r = p.add_run(text)
-    set_font(r, 10.5, INK)
-    if trailing_space:
-        doc.add_paragraph().paragraph_format.space_after = Pt(2)
+    font(r, 10.2, INK)
+    if trailing:
+        doc.add_paragraph().paragraph_format.space_after = Pt(1)
 
 
-def add_bullets(doc, items):
-    for item in items:
+def section(doc, title, paragraphs=None, bullets=None):
+    doc.add_heading(title, level=1)
+    for text in paragraphs or []:
+        p = doc.add_paragraph(text)
+        p.paragraph_format.widow_control = True
+    for text in bullets or []:
         p = doc.add_paragraph(style="List Bullet")
-        p.paragraph_format.left_indent = Inches(0.34)
-        p.paragraph_format.first_line_indent = Inches(-0.17)
+        p.paragraph_format.left_indent = Inches(0.32)
+        p.paragraph_format.first_line_indent = Inches(-0.16)
         p.paragraph_format.space_after = Pt(2)
-        r = p.add_run(item)
-        set_font(r)
+        r = p.add_run(text)
+        font(r)
 
 
-def add_numbered(doc, items):
-    for item in items:
+def numbered(doc, items):
+    for text in items:
         p = doc.add_paragraph(style="List Number")
         p.paragraph_format.left_indent = Inches(0.38)
         p.paragraph_format.first_line_indent = Inches(-0.2)
         p.paragraph_format.space_after = Pt(2)
-        r = p.add_run(item)
-        set_font(r)
+        r = p.add_run(text)
+        font(r)
 
 
-def add_table(doc, headers, rows, widths=None):
-    table = doc.add_table(rows=1, cols=len(headers))
-    table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    table.style = "Table Grid"
-    if widths is None:
-        base = 9360 // len(headers)
-        widths = [base] * len(headers)
-        widths[-1] += 9360 - sum(widths)
-    set_table_geometry(table, widths)
-    for i, header in enumerate(headers):
-        cell = table.rows[0].cells[i]
-        set_cell_shading(cell, BLUE)
-        p = cell.paragraphs[0]
-        p.paragraph_format.space_after = Pt(0)
-        r = p.add_run(header)
-        set_font(r, 9, WHITE, True)
-    set_repeat_table_header(table.rows[0])
-    for row_idx, row in enumerate(rows):
-        cells = table.add_row().cells
-        for i, value in enumerate(row):
-            if row_idx % 2:
-                set_cell_shading(cells[i], "F8F9FC")
-            p = cells[i].paragraphs[0]
-            p.paragraph_format.space_after = Pt(0)
-            r = p.add_run(str(value))
-            set_font(r, 9.2)
-    set_table_geometry(table, widths)
-    doc.add_paragraph().paragraph_format.space_after = Pt(2)
-    return table
-
-
-def add_section(doc, heading, paragraphs=None, bullets=None):
-    doc.add_heading(heading, level=1)
-    for text in paragraphs or []:
-        p = doc.add_paragraph(text)
-        p.paragraph_format.widow_control = True
-    if bullets:
-        add_bullets(doc, bullets)
+def table(doc, headers, rows, widths=None):
+    tab = doc.add_table(rows=1, cols=len(headers))
+    tab.alignment = WD_TABLE_ALIGNMENT.CENTER
+    tab.style = "Table Grid"
+    for idx, value in enumerate(headers):
+        cell = tab.rows[0].cells[idx]
+        shade(cell, NAVY)
+        margins(cell)
+        r = cell.paragraphs[0].add_run(value)
+        font(r, 8.8, WHITE, True)
+    for row_index, values in enumerate(rows):
+        cells = tab.add_row().cells
+        for idx, value in enumerate(values):
+            if row_index % 2:
+                shade(cells[idx], LIGHT)
+            margins(cells[idx])
+            cells[idx].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+            r = cells[idx].paragraphs[0].add_run(str(value))
+            font(r, 8.8)
+    if widths:
+        for row in tab.rows:
+            for idx, cell in enumerate(row.cells):
+                cell.width = Inches(widths[idx])
+    doc.add_paragraph().paragraph_format.space_after = Pt(1)
 
 
 def save(doc, filename, title, subject):
     props = doc.core_properties
     props.title = title
     props.subject = subject
-    props.author = "RUAHTONE"
-    props.keywords = "RUAHTONE, iglesia, servicios, MVP, producto"
-    props.comments = "Documento generado desde la especificación oficial de RUAHTONE."
+    props.author = "Equipo Fix & Go"
+    props.keywords = "Fix & Go, APT122, servicios técnicos, plataforma, MVP"
+    props.comments = "Documento basado en la definición oficial consolidada de Fix & Go."
     doc.save(OUT / filename)
-
-
-def build_master():
-    title = "Documento Maestro del Producto"
-    doc = configure_document(title)
-    add_cover(doc, "RUAHTONE", title, "Visión, filosofía, alcance y experiencia del MVP", "RHT-PROD-001")
-    add_intro(doc)
-    add_section(doc, "1. Resumen ejecutivo", [
-        "RUAHTONE es un sistema operativo para la organización de una iglesia y sus ministerios. Centraliza la preparación, coordinación y ejecución de servicios para evitar que WhatsApp funcione como agenda, repositorio, lista de asistencia e historial improvisado.",
-        "El MVP será un frontend local, realista y funcional, pensado para probar personalmente, validar con miembros reales de una iglesia, descubrir errores de experiencia y demostrar el producto antes de convertirlo en un SaaS.",
-    ])
-    add_callout(doc, "PROPUESTA DE VALOR", "Organizar un servicio de iglesia sin depender de WhatsApp.", PURPLE)
-    add_section(doc, "2. Problema observado", ["La idea nace de la experiencia directa del fundador en adoración, guitarra, sonido y coordinación de servicios en una iglesia de Chile."], [
-        "Horarios, confirmaciones, tonalidades, PDFs, canciones, ensayos y cambios se dispersan entre mensajes.",
-        "La información se pierde, se repite y queda enterrada.",
-        "La preparación depende demasiado de una persona que organiza.",
-        "Existe poca visibilidad del estado actual y dificultad para saber qué cambió.",
-        "Los servicios especiales aumentan la complejidad técnica y operacional.",
-    ])
-    add_section(doc, "3. Principio central", ["El servicio es la unidad operacional principal. Las pantallas y entidades existen en función de la preparación real del servicio, no como módulos administrativos desconectados."])
-    add_table(doc, ["Nivel", "Relación operacional"], [
-        ("Iglesia", "Organiza ministerios y personas"),
-        ("Ministerios", "Participan en servicios"),
-        ("Servicios", "Concentran la preparación"),
-        ("Asignaciones", "Relacionan personas, ministerios y funciones"),
-        ("Canciones y recursos", "Definen qué debe prepararse"),
-        ("Checklists y actividad", "Muestran ejecución, cambios e historial"),
-    ], [1900, 7460])
-    add_section(doc, "4. Usuarios y experiencia emocional")
-    add_table(doc, ["Usuario", "Debe responder rápidamente", "Experiencia buscada"], [
-        ("Pastor", "¿Está preparado? ¿Hay problemas?", "Tranquilidad"),
-        ("Líder", "¿Quién confirmó? ¿Qué falta?", "Control"),
-        ("Músico / servidor", "¿Cuándo, dónde y qué preparo?", "Claridad"),
-        ("Sonido", "¿Qué configuración y tareas necesito?", "Preparación"),
-        ("Multimedia", "¿Qué presentación y recursos están listos?", "Orden"),
-        ("Administrador", "¿Cómo está la operación general?", "Orden"),
-    ], [1600, 5000, 2760])
-    add_section(doc, "5. Objetivo del MVP", bullets=[
-        "Crear y configurar un servicio.", "Asignar ministerios, personas y funciones específicas.",
-        "Permitir que cada servidor confirme su propia asistencia.", "Agregar canciones y definir tonalidad por servicio.",
-        "Asociar recursos a entidades del dominio.", "Crear checklists contextuales.",
-        "Visualizar cambios e información del servicio en un solo lugar.",
-    ])
-    add_section(doc, "6. Alcance oficial", ["El MVP funciona completamente en local con datos demo realistas de Iglesia Manantiales, Santiago de Chile."], [
-        "Inicio contextual, servicios, Centro del Servicio, calendario y búsqueda global.",
-        "Personas, roles, ministerios, asignaciones y confirmaciones.",
-        "Canciones, instancias por servicio, recursos e historial de uso.",
-        "Checklists de servicio, ministerio y persona; actividad estructurada y notificaciones relevantes.",
-        "Contextos específicos para servidor, líder, administrador, pastor, sonido y multimedia.",
-        "Sonido con monitoreo, sala, P16, patch, escenas y prueba de sonido como información operacional.",
-        "Temas claro y oscuro, sidebar adaptable, responsive y restablecimiento de datos demo.",
-    ])
-    add_section(doc, "7. Fuera de alcance", bullets=[
-        "Backend, base de datos remota y autenticación real.", "Pagos, suscripciones y facturación.",
-        "Aplicaciones iOS, Android, React Native o Capacitor.", "Chat, API de WhatsApp y funciones sociales.",
-        "IA, reconocimiento de audio e integraciones complejas.", "Contabilidad, diezmos y ofrendas.",
-        "Streaming, sincronización cloud y control físico de consolas.",
-    ])
-    add_section(doc, "8. Filosofía de diseño", ["La interfaz debe sentirse premium porque es simple: organizada, clara y tranquila; cristiana sin clichés visuales, profesional sin ser corporativa y moderna sin ser fría."], [
-        "Referencias de sensación: Apple, Linear, Notion, Stripe y Superhuman, sin copiar interfaces.",
-        "Base visual minimalista con azul y morado como acentos controlados.",
-        "Light y Dark Mode con jerarquía, contraste y legibilidad propios.",
-        "Tipografía moderna, espacio generoso, bordes suaves y sombras discretas.",
-        "Animaciones sutiles solo donde transmiten estado o continuidad.",
-        "No usar gradientes, glassmorphism, color o movimiento de forma excesiva.",
-    ])
-    add_section(doc, "9. Principios de experiencia", bullets=[
-        "El usuario debe entender lo esencial en menos de diez segundos.",
-        "Contexto, estado y acción tienen prioridad sobre información secundaria.",
-        "Cada pantalla tiene una acción principal clara.",
-        "No existen pantallas vacías sin explicación ni botones principales sin comportamiento.",
-        "La navegación y los permisos se adaptan al contexto real del usuario.",
-        "El calendario permite encontrar servicios; no es el centro del producto.",
-        "La actividad es historial estructurado, no mensajería.",
-    ])
-    add_section(doc, "10. Criterios absolutos", bullets=[
-        "Ante conflicto entre estética y funcionamiento, gana el funcionamiento.",
-        "Ante conflicto entre cantidad y simplicidad, gana la simplicidad.",
-        "Ante conflicto entre un modelo genérico y la operación real de una iglesia, gana la operación real.",
-        "El MVP demuestra una cosa excepcionalmente bien: preparar y coordinar un servicio sin el caos de WhatsApp.",
-    ])
-    add_callout(doc, "CRITERIO DE ÉXITO", "Un miembro entiende qué debe hacer; un líder deja de reenviar todo por WhatsApp; y la iglesia percibe que la preparación está ordenada.", trailing_space=False)
-    save(doc, "01_RUAHTONE_Documento_Maestro_Producto.docx", title, "Visión y alcance oficial del MVP")
-
-
-def build_functional():
-    title = "Especificación Funcional del MVP"
-    doc = configure_document(title)
-    add_cover(doc, "RUAHTONE", title, "Requisitos, reglas de negocio, estados y flujos obligatorios", "RHT-FUNC-001")
-    add_intro(doc)
-    add_section(doc, "1. Regla de oro", ["Antes de implementar una función debe responderse qué problema operativo real de una iglesia resuelve. Si la respuesta no es clara, la función no debe inventarse."])
-    add_section(doc, "2. Servicios", bullets=[
-        "Crear, editar, duplicar, eliminar, publicar y archivar.",
-        "Registrar nombre, tipo, fecha, hora de inicio, hora de término, lugar y descripción.",
-        "Concentrar ministerios, personas, canciones, recursos, checklist y actividad.",
-        "Estados: Planificación, Organizando, Confirmando, Listo, Completado y Archivado.",
-        "Tipos: Culto, Ensayo, Conferencia, Jóvenes, Reunión y Evento especial.",
-        "Un ensayo puede relacionarse con el servicio o ministerio que prepara.",
-        "Duplicar conserva estructura seleccionada y reinicia confirmaciones.",
-    ])
-    add_section(doc, "3. Personas, roles y ministerios", ["Una persona posee una identidad única y puede servir en varios ministerios. Rol y ministerio nunca son equivalentes."])
-    add_table(doc, ["Concepto", "Definición oficial", "Ejemplo"], [
-        ("Persona", "Identidad única dentro de la iglesia", "Benjamín"),
-        ("Rol", "Responsabilidad general", "Servidor / Líder"),
-        ("Ministerio", "Área donde la persona sirve", "Adoración, Sonido"),
-        ("Asignación", "Participación contextual en un servicio", "Primera guitarra"),
-    ], [1600, 4560, 3200])
-    add_section(doc, "4. Asignaciones y asistencia", bullets=[
-        "La asignación relaciona servicio, persona, ministerio y función específica.",
-        "Funciones posibles incluyen instrumentos, voces, sala, monitores, multimedia y ujieres.",
-        "El servidor confirma su propia asistencia; líder y administrador observan el estado.",
-        "Estados: Pendiente, Confirmado, No asistiré y Llegaré tarde.",
-        "Ausencia y atraso producen alertas visibles.",
-        "Una doble función incompatible en el mismo horario produce advertencia, sin bloqueo obligatorio en el MVP.",
-    ])
-    add_section(doc, "5. Canciones y tonalidad contextual", ["La canción conserva su tonalidad original. Cada uso dentro de un servicio posee configuración propia; cambiarla no modifica la biblioteca."])
-    add_table(doc, ["Entidad", "Datos relevantes"], [
-        ("Song", "Nombre, autor, tonalidad original, BPM, duración, compás, etiquetas, recursos e historial de uso"),
-        ("ServiceSong", "Servicio, canción, orden, tonalidad del servicio, BPM opcional, versión, notas y estado"),
-    ], [2200, 7160])
-    add_bullets(doc, [
-        "El líder puede reordenar mediante drag and drop y botones arriba/abajo como alternativa.",
-        "El detalle de canción muestra información general, recursos, historial y servicios donde fue utilizada.",
-        "Los contadores y valores visibles deben derivarse de datos reales y consistentes.",
-    ])
-    add_section(doc, "6. Recursos", ["Los recursos no son una carpeta aislada: deben asociarse a una canción, servicio o ministerio."], [
-        "Tipos: PDF, Partitura, Chord Chart, Secuencia, Multitrack, Audio, Video, Imagen, Documento y Otro.",
-        "Cada recurso debe ofrecer una acción visual coherente.",
-        "Los archivos simulados deben presentarse explícitamente como parte del MVP local.",
-    ])
-    add_section(doc, "7. Checklists, actividad y notificaciones", bullets=[
-        "Los checklists son contextuales; un servicio normal y uno especial pueden requerir estructuras distintas.",
-        "Cada ministerio puede tener su checklist y cada servidor tareas personales.",
-        "Completar tareas actualiza el estado visible.",
-        "Cambios relevantes generan actividad estructurada con actor y momento.",
-        "La actividad no incluye likes, reacciones, grupos ni conversaciones.",
-        "Las notificaciones deben ser relevantes y no generar spam.",
-    ])
-    add_section(doc, "8. Centro del Servicio", ["Es la pantalla más importante del MVP y el destino común desde Inicio, Calendario, Servicios, notificaciones y búsqueda."], [
-        "Fecha, horario, lugar y estado.", "Ministerios y contadores de confirmación.",
-        "Personas, funciones y asistencia.", "Canciones y tonalidades del servicio.",
-        "Recursos, checklist, actividad y observaciones.", "Acción principal: Gestionar servicio.",
-    ])
-    add_section(doc, "9. Experiencias por contexto")
-    add_table(doc, ["Contexto", "Prioridad de inicio", "Capacidad principal"], [
-        ("Músico", "Próximo servicio, confirmación, canciones, cambios, ensayo", "Responder asistencia y preparar repertorio"),
-        ("Líder", "Servicio, confirmaciones, pendientes, canciones, tareas", "Gestionar su ministerio en el servicio"),
-        ("Administrador", "Servicios, ministerios, personas, estado general", "Administrar estructura y operación"),
-        ("Pastor", "Servicios, preparación, ministerios, alertas", "Ver estado sin configuración técnica"),
-        ("Sonido", "Servicio, checklist, configuración, P16 y patch", "Preparar operación técnica"),
-    ], [1400, 4400, 3560])
-    add_section(doc, "10. Sonido", bullets=[
-        "Separar sala, monitoreo y extensión conceptual para streaming.",
-        "Representar integrantes, instrumentos, canales, sistemas de monitoreo y observaciones.",
-        "Permitir configuraciones P16 diferentes por servicio.",
-        "Registrar patch con canal, fuente, micrófono, instrumento, entrada, salida y observación.",
-        "Asociar una escena a un servicio.",
-        "Registrar prueba con o sin secuencia y estado Pendiente, En progreso o Completada.",
-        "Mostrar cambios respecto del servicio anterior.",
-    ])
-    add_section(doc, "11. Navegación y configuración", bullets=[
-        "Rutas: Inicio, Servicios, Centro del Servicio, Calendario, Canciones, Personas, Recursos, Ministerios y Configuración.",
-        "Búsqueda global mediante Cmd + K o Ctrl + K para servicios, canciones, personas, recursos y ministerios.",
-        "Sidebar expandible y colapsable; navegación compacta en móvil.",
-        "Configuración: tema, información de iglesia, demo, preferencias y restablecimiento confirmado.",
-        "El cambio de contexto modifica navegación, dashboard, información y acciones.",
-    ])
-    add_section(doc, "12. Flujos obligatorios de demostración")
-    add_numbered(doc, [
-        "Flujo principal: próximo servicio, Centro, asignaciones, confirmación, contexto líder, cambio de tono contextual, recurso, actividad, checklist, calendario y duplicación con confirmaciones pendientes.",
-        "Sonido: servicio, checklist, músicos, P16, cambios, patch y preparación completada.",
-        "Líder de adoración: confirmaciones, agregar y ordenar canción, cambiar tono, nota, PDF y actividad.",
-        "Pastor: estado general, ministerios, alertas y Centro del Servicio sin configuración técnica.",
-    ])
-    add_section(doc, "13. Criterios de aceptación global", bullets=[
-        "Todas las rutas funcionan y la aplicación compila sin errores TypeScript.",
-        "LocalStorage persiste creación, edición, eliminación, duplicación y cambios.",
-        "Confirmaciones, tonalidades, recursos, checklist y actividad actualizan solo las entidades correspondientes.",
-        "Búsqueda, tema, responsive y estados vacíos funcionan.",
-        "Los datos demo son realistas y sus estadísticas coinciden.",
-        "Las acciones principales son reales o se simulan de forma coherente y explícita.",
-    ])
-    save(doc, "02_RUAHTONE_Especificacion_Funcional_MVP.docx", title, "Requisitos funcionales oficiales")
-
-
-def build_domain():
-    title = "Modelo de Dominio y Arquitectura"
-    doc = configure_document(title)
-    add_cover(doc, "RUAHTONE", title, "Entidades, relaciones, fronteras de datos y tecnología oficial", "RHT-ARCH-001")
-    add_intro(doc)
-    add_section(doc, "1. Arquitectura conceptual", ["Los datos se modelan relacionalmente aunque el MVP no utilice backend. Las relaciones guardan identificadores y evitan duplicar información innecesaria."])
-    add_table(doc, ["Entidad", "Responsabilidad oficial"], [
-        ("Church", "Organización principal; futura relación con plan y usuarios"),
-        ("User", "Identidad de acceso conceptual, separada de permisos y ministerios"),
-        ("Person", "Miembro o participante con rol, ministerios, disponibilidad y estado"),
-        ("Ministry", "Área de servicio con líder, miembros, checklist y configuraciones"),
-        ("Service", "Unidad operacional central"),
-        ("ServiceAssignment", "Persona asignada a función y ministerio en un servicio"),
-        ("Song", "Información global de biblioteca y tonalidad original"),
-        ("ServiceSong", "Configuración contextual de una canción en un servicio"),
-        ("Resource", "Recurso relacionado con canción, servicio o ministerio"),
-        ("Checklist / Item", "Preparación contextual y estado de tareas"),
-        ("Activity", "Historial estructurado de cambios"),
-        ("Notification", "Aviso relevante para el usuario"),
-        ("SoundConfiguration", "Preparación técnica de sala, monitoreo, P16, patch y escena"),
-    ], [2500, 6860])
-    add_section(doc, "2. Relaciones principales")
-    add_numbered(doc, [
-        "Una Iglesia organiza Ministerios, Personas y Servicios.",
-        "Una Persona puede pertenecer a varios Ministerios.",
-        "Un Servicio contiene Asignaciones que referencian Persona y Ministerio.",
-        "Un Servicio contiene ServiceSongs que referencian una Song global.",
-        "Recursos se relacionan con Canciones, Servicios o Ministerios.",
-        "Checklists se contextualizan por Servicio, Ministerio o Persona.",
-        "La Actividad registra modificaciones relevantes del Servicio.",
-    ])
-    add_section(doc, "3. Diferencia entre datos globales y contextuales")
-    add_table(doc, ["Dato global", "Dato contextual"], [
-        ("Song.originalKey = D", "ServiceSong.key = F para Culto Domingo"),
-        ("Person y sus ministerios", "ServiceAssignment y función en un servicio"),
-        ("Recurso de una canción", "Recurso asociado a un servicio específico"),
-        ("Plantilla de checklist", "Checklist ejecutado para un servicio"),
-    ], [4680, 4680])
-    add_callout(doc, "INVARIANTE CRÍTICA", "Cambiar la tonalidad de una canción dentro de un servicio modifica únicamente ServiceSong. Song.originalKey permanece intacta.", PURPLE)
-    add_section(doc, "4. Contratos mínimos oficiales")
-    add_table(doc, ["Entidad", "Campos mínimos definidos"], [
-        ("Person", "id, nombre, apellido, avatar, teléfono opcional, ministerios, rol, disponibilidad, estado"),
-        ("ServiceAssignment", "id, serviceId, personId, ministryId, función, attendanceStatus, notas"),
-        ("Song", "id, nombre, autor, tonalidad original, BPM, duración, compás, etiquetas, recursos, historial"),
-        ("ServiceSong", "id, serviceId, songId, orden, key, BPM opcional, versión, notas, enabled"),
-        ("Service", "nombre, fecha, horas, lugar, descripción, ministerios, personas, canciones, recursos, checklist, actividad"),
-        ("Ministry", "id, nombre, descripción, icono, color, líder, miembros, checklist, configuraciones"),
-    ], [2300, 7060])
-    add_section(doc, "5. Reglas de integridad", bullets=[
-        "Las relaciones almacenan IDs, no nombres duplicados.",
-        "Las estadísticas se calculan desde asignaciones y estados reales.",
-        "Una confirmación cambia únicamente la asignación de la persona que responde.",
-        "Una persona puede tener varios ministerios, pero una sola identidad.",
-        "Los cambios importantes generan actividad.",
-        "Los servicios históricos conservan canciones, tonalidades y asignaciones utilizadas.",
-        "Un conflicto de horario se informa claramente.",
-        "Los permisos se simulan aunque no exista autenticación real.",
-    ])
-    add_section(doc, "6. Estados oficiales")
-    add_table(doc, ["Entidad", "Estados"], [
-        ("Servicio", "Planificación, Organizando, Confirmando, Listo, Completado, Archivado"),
-        ("Asistencia", "Pendiente, Confirmado, No asistiré, Llegaré tarde"),
-        ("Prueba de sonido", "Pendiente, En progreso, Completada"),
-        ("Checklist", "Ítems completos o pendientes"),
-    ], [2600, 6760])
-    add_section(doc, "7. Tecnología oficial del MVP", bullets=[
-        "React, TypeScript y Vite.", "Tailwind CSS y shadcn/ui.", "Lucide Icons y Framer Motion.",
-        "LocalStorage como persistencia local.", "React Context o Zustand solamente si simplifica el estado.",
-        "Tipos e interfaces TypeScript para el dominio.",
-    ])
-    add_section(doc, "8. Restricciones técnicas", bullets=[
-        "No utilizar Firebase, Supabase, PostgreSQL, MongoDB ni APIs externas.",
-        "No implementar backend, autenticación real ni servicios cloud.",
-        "Crear un store central para personas, ministerios, servicios, asignaciones, canciones, recursos, checklists, actividad y configuración.",
-        "Persistir cambios en LocalStorage y permitir restablecer el seed demo.",
-        "Separar conceptualmente usuario, permisos, rol, ministerios y datos.",
-    ])
-    add_section(doc, "9. Preparación para evolución futura", ["Sin implementar estas capacidades, el diseño no debe bloquear aplicación móvil, autenticación, múltiples iglesias, multi-sede, pagos, notificaciones, almacenamiento cloud, roles personalizados, estadísticas, IA e integraciones."], [
-        "La futura estructura SaaS contempla Iglesia → Plan → Usuarios → Ministerios → Servicios.",
-        "La lógica conceptual debe poder reutilizarse en una experiencia móvil.",
-        "Sonido contempla streaming como área futura, sin activarlo en el MVP.",
-    ])
-    add_section(doc, "10. Estructura lógica sugerida por la especificación", ["Esta vista organiza las prioridades oficiales; no introduce una dependencia adicional."], [
-        "Capa de dominio: entidades, relaciones, estados y reglas.",
-        "Store central: acciones y persistencia LocalStorage.",
-        "Experiencias por contexto: servidor, líder, administrador, pastor, sonido y multimedia.",
-        "Features operacionales: servicios, asignaciones, canciones, recursos, checklists, actividad, calendario y sonido.",
-        "Datos demo: Iglesia Manantiales y escenarios consistentes.",
-    ])
-    save(doc, "03_RUAHTONE_Modelo_Dominio_Arquitectura.docx", title, "Modelo y arquitectura oficial del MVP")
-
-
-def build_roadmap():
-    title = "Roadmap y Plan de Validación"
-    doc = configure_document(title)
-    add_cover(doc, "RUAHTONE", title, "Secuencia oficial de implementación, demostración y calidad", "RHT-PLAN-001")
-    add_intro(doc)
-    add_section(doc, "1. Estrategia de entrega", ["La prioridad oficial es calidad sobre cantidad. Es preferible entregar seis pantallas excelentes que veinte mediocres. Cada incremento debe sostener una experiencia de producto, no un CRUD aislado."])
-    add_section(doc, "2. Orden oficial de implementación")
-    priorities = [
-        "Arquitectura de datos", "Layout global", "Inicio contextual", "Servicios", "Centro del Servicio",
-        "Asignaciones", "Confirmaciones", "Canciones", "Tonalidades por servicio", "Recursos",
-        "Checklists", "Actividad", "Calendario", "Personas", "Ministerios", "Sonido", "Configuración",
-    ]
-    add_table(doc, ["Prioridad", "Área"], [(i + 1, value) for i, value in enumerate(priorities)], [1400, 7960])
-    add_section(doc, "3. Hitos de trabajo", ["Los hitos siguientes agrupan el orden oficial sin cambiarlo."])
-    add_table(doc, ["Hito", "Contenido", "Resultado verificable"], [
-        ("Fundación", "Datos, layout e Inicio", "Base local consistente y experiencia contextual"),
-        ("Núcleo", "Servicios, Centro, asignaciones y confirmaciones", "Coordinación básica del servicio"),
-        ("Preparación", "Canciones, tonalidades, recursos, checklist y actividad", "Información musical y operacional centralizada"),
-        ("Descubrimiento", "Calendario, personas y ministerios", "Acceso y administración de entidades relacionadas"),
-        ("Especialización", "Sonido y configuración", "Flujo técnico y demo reiniciable"),
-        ("Validación", "Testing integral y pruebas reales", "MVP listo para evaluación"),
-    ], [1450, 4200, 3710])
-    add_section(doc, "4. Demo flow principal")
-    add_numbered(doc, [
-        "Abrir RUAHTONE y ver el próximo servicio.", "Abrir el Centro del Servicio y ver personas asignadas.",
-        "Confirmar asistencia como servidor.", "Volver al contexto de líder y ver la actualización.",
-        "Abrir una canción y ver su tonalidad original.", "Cambiar la tonalidad solo para el servicio y verificar que el original no cambió.",
-        "Agregar un recurso y revisar la actividad.", "Completar una tarea y ver el cambio en dashboard.",
-        "Abrir el calendario y regresar al servicio.", "Duplicar el servicio, cambiar fecha y verificar confirmaciones pendientes.",
-    ])
-    add_section(doc, "5. Demos por rol")
-    add_table(doc, ["Rol", "Recorrido obligatorio"], [
-        ("Sonido", "Servicio → checklist → músicos → P16 → cambios → patch → preparación completada"),
-        ("Líder de adoración", "Confirmaciones → agregar canción → ordenar → tono → nota → PDF → actividad"),
-        ("Pastor", "Inicio → estado general → ministerios → alertas → Centro del Servicio"),
-    ], [2200, 7160])
-    add_section(doc, "6. Plan de pruebas oficial", bullets=[
-        "Navegación y rutas.", "LocalStorage.", "Creación, edición, eliminación y duplicación.",
-        "Confirmaciones y cambio de tonalidad.", "Recursos, checklist y actividad.",
-        "Búsqueda global y tema.", "Responsive y estados vacíos.",
-        "Consistencia de contadores y datos demo.", "Permisos y cambio real de experiencia por contexto.",
-    ])
-    add_section(doc, "7. Checklist de entrega")
-    add_table(doc, ["Control", "Condición de salida"], [
-        ("Compilación", "El proyecto compila"), ("TypeScript", "Sin errores"),
-        ("Consola", "Sin errores importantes"), ("Rutas", "Todas funcionan"),
-        ("Persistencia", "LocalStorage conserva cambios correctamente"), ("Demo", "Datos completos y flujos funcionales"),
-        ("Interfaz", "Responsive con Light y Dark Mode"), ("Interacciones", "Acciones principales reales"),
-        ("Entrega", "Arquitectura, estructura, funciones, simulaciones, decisiones e instrucciones documentadas"),
-    ], [2500, 6860])
-    add_section(doc, "8. Validación con usuarios", ["El MVP se utiliza para pruebas personales y con miembros reales de una iglesia, descubrir errores de UX, validar si resuelve los problemas y demostrar el producto."], [
-        "Servidor: identificar servicio, horario, lugar, confirmación, canciones y cambios en menos de diez segundos.",
-        "Líder: identificar confirmados, pendientes, canciones, recursos faltantes y tareas.",
-        "Sonido: identificar configuración, cambios, músicos, P16 y checklist.",
-        "Pastor: identificar preparación, problemas, personas faltantes y cambios importantes.",
-    ])
-    add_section(doc, "9. Mejoras futuras excluidas del MVP", bullets=[
-        "Aplicaciones móviles y notificaciones push.", "Autenticación, múltiples iglesias y multi-sede.",
-        "Suscripciones, pagos y almacenamiento cloud.", "Roles personalizados y estadísticas.",
-        "IA, reemplazos inteligentes e integraciones musicales o de sonido.", "Streaming e integraciones adicionales.",
-    ])
-    add_callout(doc, "REGLA DE CIERRE", "El MVP no debe intentar demostrar que RUAHTONE puede hacerlo todo. Debe demostrar que prepara y coordina un servicio excepcionalmente bien.", trailing_space=False)
-    save(doc, "04_RUAHTONE_Roadmap_Plan_Validacion.docx", title, "Roadmap oficial y plan de validación")
 
 
 def build_index():
     title = "Índice Ejecutivo de Documentación"
-    doc = configure_document(title)
-    add_cover(doc, "RUAHTONE", title, "Mapa del paquete documental oficial del MVP", "RHT-DOC-000")
-    add_intro(doc)
-    add_section(doc, "1. Propósito del paquete", ["Transformar la instrucción principal en documentos profesionales, utilizables y coherentes sin alterar la idea oficial ni agregar alcance."])
-    add_section(doc, "2. Documentos incluidos")
-    add_table(doc, ["Código", "Documento", "Uso principal"], [
-        ("RHT-PROD-001", "Documento Maestro del Producto", "Alinear visión, problema, alcance y experiencia"),
-        ("RHT-FUNC-001", "Especificación Funcional del MVP", "Diseñar y aceptar comportamiento"),
-        ("RHT-ARCH-001", "Modelo de Dominio y Arquitectura", "Implementar datos y fronteras correctamente"),
-        ("RHT-PLAN-001", "Roadmap y Plan de Validación", "Secuenciar, probar y entregar el MVP"),
-    ], [1900, 3600, 3860])
-    add_section(doc, "3. Orden de lectura", bullets=[
-        "Fundadores y stakeholders: Documento Maestro → Roadmap.",
-        "Diseño de producto: Documento Maestro → Especificación Funcional → Roadmap.",
-        "Desarrollo: Especificación Funcional → Modelo de Dominio → Roadmap.",
-        "Pruebas y validación: Especificación Funcional → Roadmap.",
+    doc = configure(title)
+    cover(doc, title, "Mapa del paquete profesional de producto y desarrollo", "FGO-DOC-000")
+    section(doc, "1. Propósito", ["Alinear al equipo en una definición única de Fix & Go, separar hipótesis de decisiones y entregar una base verificable para el trabajo académico y técnico."])
+    table(doc, ["Código", "Documento", "Uso"], [
+        ("FGO-PROD-001", "Documento Maestro del Producto", "Visión, problema, usuarios, negocio y riesgos"),
+        ("FGO-FUNC-001", "Especificación Funcional del MVP", "Capacidades, estados, permisos y aceptación"),
+        ("FGO-ARCH-001", "Modelo de Dominio y Arquitectura", "Datos, invariantes, stack, seguridad y evolución"),
+        ("FGO-PLAN-001", "Roadmap y Plan de Validación", "Etapas, experimentos, calidad y salida"),
+    ], [1.4, 2.6, 2.8])
+    section(doc, "2. Orden de lectura", bullets=[
+        "Presentación académica: Maestro → Roadmap.",
+        "Diseño y UX: Maestro → Especificación → Roadmap.",
+        "Desarrollo: Especificación → Dominio y Arquitectura → Roadmap.",
+        "Validación: Maestro → Especificación → Roadmap.",
     ])
-    add_section(doc, "4. Control documental")
-    add_table(doc, ["Campo", "Valor"], [
-        ("Fuente", "RUAHTONE — Master Product & Development Prompt"),
-        ("Versión del paquete", "1.0"), ("Fecha", TODAY),
-        ("Estado", "Oficial para definición del MVP"),
-        ("Principio de cambio", "Toda modificación de alcance debe volver a contrastarse con la idea oficial"),
-    ], [2200, 7160])
-    add_callout(doc, "IDENTIDAD", "RUAHTONE — Todo lo que necesitas para preparar el servicio. En un solo lugar.", PURPLE, trailing_space=False)
-    save(doc, "00_RUAHTONE_Indice_Ejecutivo.docx", title, "Índice del paquete documental")
+    section(doc, "3. Control documental")
+    table(doc, ["Campo", "Valor"], [
+        ("Producto", "Fix & Go"), ("Versión", "2.0"), ("Fecha", DATE),
+        ("Sección", "APT122-005D"), ("Equipo", "Número pendiente"),
+        ("Estado", "Base oficial para planificación"),
+    ], [1.8, 5.0])
+    callout(doc, "IDENTIDAD", "Fix & Go — Tu arreglo confiable, en un clic.", trailing=False)
+    save(doc, "00_FIX_AND_GO_Indice_Ejecutivo.docx", title, "Índice del paquete documental")
+
+
+def build_master():
+    title = "Documento Maestro del Producto"
+    doc = configure(title)
+    cover(doc, title, "Visión, alcance, modelo de negocio y riesgos", "FGO-PROD-001")
+    section(doc, "1. Resumen ejecutivo", [
+        "Fix & Go es una plataforma web y móvil que conecta a clientes con profesionales cercanos y verificables para resolver servicios técnicos del hogar. La entrada se concentra en gas, electricidad y agua.",
+        "La solución reúne búsqueda, perfiles, credenciales, solicitudes, cotizaciones, mensajería, pago, seguimiento y reputación. El MVP académico representa el recorrido con datos ficticios e integraciones simuladas; el producto comercial exigirá infraestructura, cumplimiento y operación real.",
+    ])
+    callout(doc, "PROPUESTA DE VALOR", "Encontrar, contratar y evaluar a un profesional confiable desde un solo lugar.")
+    section(doc, "2. Problema", bullets=[
+        "Contratación fragmentada entre recomendaciones, redes sociales y avisos generales.",
+        "Poca información comparable sobre especialidad, cobertura, disponibilidad y precio.",
+        "Dificultad para comprobar identidad, certificaciones y experiencia.",
+        "Escasa trazabilidad de acuerdos, cambios, pagos y reclamos.",
+        "Profesionales formales con pocas herramientas para diferenciarse y construir reputación.",
+    ])
+    section(doc, "3. Actores y resultados")
+    table(doc, ["Actor", "Necesidad", "Resultado"], [
+        ("Cliente", "Resolver con menor incertidumbre", "Solicitud clara, seguimiento y respaldo"),
+        ("Profesional", "Acceder a demanda y demostrar confianza", "Oportunidades trazables y pago ordenado"),
+        ("Administrador", "Proteger la operación", "Validación, soporte y auditoría"),
+    ], [1.3, 2.7, 2.8])
+    section(doc, "4. Alcance de la visión", bullets=[
+        "Perfiles diferenciados y permisos de cliente, profesional y administrador.",
+        "Verificación de identidad, especialidad y credenciales pertinentes.",
+        "Búsqueda por categoría, zona, disponibilidad, reputación y verificación.",
+        "Solicitud, cotización, agenda, mensajería y seguimiento.",
+        "Pago seguro, comisión, reembolso y disputa mediante proveedor externo.",
+        "Evaluaciones vinculadas a servicios completados y moderación trazable.",
+    ])
+    section(doc, "5. Alcance del MVP académico", bullets=[
+        "Datos e identidades completamente ficticios.",
+        "Recorrido completo para gas, electricidad y agua.",
+        "Verificación, mensajería, ubicación y pago simulados y etiquetados.",
+        "Pruebas con clientes y profesionales potenciales.",
+        "Sin dinero, documentos ni direcciones reales.",
+    ])
+    section(doc, "6. Modelo de negocio preliminar", [
+        "La hipótesis comercial es una comisión del 20 % por servicio completado. Un trabajo de $50.000 genera $10.000 de ingreso bruto para la plataforma.",
+        "La inversión inicial informada es $6.500.000 y los costos fijos mensuales se estiman entre $340.000 y $900.000. Con el ingreso unitario del ejemplo, el equilibrio contable está entre 34 y 90 servicios; 62 servicios equivale a un costo de $620.000. La recuperación en 1 año y 5 meses requiere un escenario financiero completo antes de comunicarse como proyección.",
+    ])
+    section(doc, "7. Hipótesis críticas", bullets=[
+        "La verificación visible aumenta confianza e intención de contratar.",
+        "Existe oferta suficiente de profesionales formales en las categorías iniciales.",
+        "Clientes y profesionales aceptan el proceso digital y la comisión.",
+        "La plataforma puede gestionar disputas sin un costo de soporte inviable.",
+        "Gas, electricidad y agua son un foco inicial manejable y relevante.",
+    ])
+    section(doc, "8. Riesgos", bullets=[
+        "Baja adopción o desequilibrio entre oferta y demanda.",
+        "Fraude, suplantación, filtración de datos y fallas de pago.",
+        "Credenciales difíciles de comprobar o con vigencias distintas.",
+        "Competencia de plataformas establecidas y precios informales.",
+        "Responsabilidad legal y reputacional por servicios deficientes.",
+        "Tiempo y presupuesto limitados del equipo académico.",
+    ])
+    section(doc, "9. Expansión", ["Construcción, mecánica, barbería, gastronomía, kinesiología y otras categorías son oportunidades futuras. Cada una requiere validar demanda, oferta, seguridad y regulación antes de incorporarse."])
+    callout(doc, "CRITERIO DE ÉXITO", "El MVP es exitoso si usuarios potenciales completan el recorrido, entienden la verificación y perciben más confianza y trazabilidad que en el proceso informal.", trailing=False)
+    save(doc, "01_FIX_AND_GO_Documento_Maestro_Producto.docx", title, "Visión y alcance de Fix & Go")
+
+
+def build_functional():
+    title = "Especificación Funcional del MVP"
+    doc = configure(title)
+    cover(doc, title, "Requisitos, estados, permisos y criterios de aceptación", "FGO-FUNC-001")
+    section(doc, "1. Roles")
+    table(doc, ["Rol", "Capacidades"], [
+        ("Cliente", "Buscar, solicitar, comparar, contratar, seguir, disputar y evaluar sus servicios"),
+        ("Profesional", "Gestionar perfil, credenciales, disponibilidad, cotizaciones, trabajos y reputación"),
+        ("Administrador", "Revisar credenciales, moderar, auditar y atender incidentes según privilegios"),
+    ], [1.5, 5.3])
+    section(doc, "2. Descubrimiento", bullets=[
+        "Buscar por gas, electricidad o agua y zona de cobertura.",
+        "Filtrar por disponibilidad, reputación y verificación.",
+        "Mostrar perfil, experiencia declarada, credenciales vigentes y evaluaciones elegibles.",
+        "No exponer dirección ni identidad privada durante la búsqueda.",
+    ])
+    section(doc, "3. Solicitud y cotización", bullets=[
+        "El cliente registra categoría, descripción, zona, urgencia, disponibilidad y adjuntos opcionales.",
+        "El profesional pregunta, rechaza o envía cotización con alcance, precio, fecha y vigencia.",
+        "El cliente compara y acepta una única cotización vigente.",
+        "Cada transición conserva actor, fecha y estado anterior/nuevo.",
+    ])
+    section(doc, "4. Servicio, mensajes y cierre", bullets=[
+        "La cotización aceptada crea el servicio contratado.",
+        "Cliente y profesional comparten agenda y mensajes asociados.",
+        "El profesional inicia y declara finalización; el cliente confirma, disputa o solicita revisión.",
+        "La plataforma conserva un historial cronológico comprensible.",
+    ])
+    section(doc, "5. Verificación", bullets=[
+        "La credencial registra tipo, emisor, vigencia, evidencia, estado, revisor y motivo.",
+        "Solo una aprobación vigente habilita el distintivo para la especialidad.",
+        "Rechazo, expiración o suspensión retiran el distintivo sin borrar historial.",
+    ])
+    section(doc, "6. Pagos y reputación", bullets=[
+        "El proveedor externo maneja los datos de pago; la plataforma conserva referencias y estados.",
+        "Liberación y reembolso son idempotentes y auditables.",
+        "La comisión, monto profesional, impuestos y ajustes se desglosan.",
+        "Solo participantes de un servicio completado pueden evaluarse.",
+    ])
+    section(doc, "7. Estados principales")
+    table(doc, ["Concepto", "Estados"], [
+        ("Solicitud", "Borrador, publicada, cotizada, asignada, cancelada, expirada"),
+        ("Cotización", "Borrador, enviada, aceptada, rechazada, retirada, expirada"),
+        ("Servicio", "Agendado, en progreso, esperando cliente, completado, cancelado, disputado"),
+        ("Credencial", "Borrador, enviada, en revisión, aprobada, rechazada, expirada"),
+        ("Pago", "Creado, autorizado, retenido, liberado, reembolsado, fallido"),
+    ], [1.5, 5.3])
+    section(doc, "8. Recorrido de demostración")
+    numbered(doc, [
+        "Administrador revisa y aprueba una credencial ficticia.",
+        "Cliente busca una categoría y compara perfiles.",
+        "Cliente crea una solicitud y recibe dos cotizaciones ficticias.",
+        "Cliente acepta una propuesta y observa el pago simulado.",
+        "Profesional gestiona agenda, mensajes y estado del trabajo.",
+        "Cliente confirma el cierre y publica una evaluación.",
+        "Administrador consulta la trazabilidad y un caso de disputa.",
+    ])
+    section(doc, "9. Criterios globales", bullets=[
+        "Responsive, accesible y operable con teclado.",
+        "Permisos validados fuera de la interfaz.",
+        "Estados de carga, vacío, error, reintento y permiso insuficiente.",
+        "Datos ficticios coherentes y simulaciones identificables.",
+        "Sin secretos, documentos personales ni pagos reales.",
+    ])
+    save(doc, "02_FIX_AND_GO_Especificacion_Funcional_MVP.docx", title, "Requisitos funcionales del MVP")
+
+
+def build_architecture():
+    title = "Modelo de Dominio y Arquitectura"
+    doc = configure(title)
+    cover(doc, title, "Datos, invariantes, stack y controles de seguridad", "FGO-ARCH-001")
+    section(doc, "1. Núcleo de dominio", ["El servicio contratado es el centro operacional. Nace desde una cotización aceptada y relaciona agenda, participantes, mensajes, pagos, cierre, disputa y evaluación."])
+    table(doc, ["Entidad", "Responsabilidad"], [
+        ("User / Profiles", "Identidad digital y perfiles diferenciados"),
+        ("ServiceCategory", "Categoría y requisitos de especialidad"),
+        ("Credential", "Evidencia y decisión de verificación"),
+        ("ServiceRequest", "Necesidad, zona y disponibilidad del cliente"),
+        ("Quote", "Propuesta de alcance, precio y condiciones"),
+        ("ServiceJob", "Ejecución y trazabilidad del trabajo"),
+        ("Message", "Comunicación vinculada al servicio"),
+        ("Payment", "Referencia, desglose y estado del proveedor"),
+        ("Review / Dispute", "Reputación elegible y resolución de incidentes"),
+        ("AuditEvent", "Actor, acción, objetivo y fecha"),
+    ], [1.8, 5.0])
+    section(doc, "2. Invariantes", bullets=[
+        "Una sola cotización aceptada por solicitud.",
+        "Verificación derivada de credencial aprobada y vigente.",
+        "Evaluación limitada a participantes de un servicio completado.",
+        "Pago desglosado e idempotente; la plataforma nunca almacena tarjeta completa.",
+        "Dirección exacta visible solo para participantes y etapa autorizados.",
+        "Acciones administrativas conservan responsable, motivo y fecha.",
+    ])
+    section(doc, "3. Stack recomendado")
+    table(doc, ["Capa", "Tecnología", "Razón"], [
+        ("Móvil", "React Native + Expo", "iOS/Android con TypeScript compartido"),
+        ("Web", "Next.js", "paneles, accesibilidad y ecosistema"),
+        ("API", "NestJS", "módulos, validación y pruebas"),
+        ("Datos", "PostgreSQL + PostGIS", "transacciones, relaciones y geodatos"),
+        ("Colas", "Redis", "límites, trabajos y coordinación"),
+        ("Archivos", "S3 compatible", "privacidad, URLs firmadas y ciclo de vida"),
+        ("Identidad", "OIDC gestionado", "MFA y recuperación robusta"),
+        ("Observabilidad", "OpenTelemetry", "métricas y trazas portables"),
+    ], [1.2, 2.2, 3.4])
+    section(doc, "4. Estrategia estructural", ["Un monolito modular reduce la carga de un equipo de tres personas. Identidad, verificación, solicitudes, cotizaciones, servicios, pagos, mensajes, reputación y administración mantienen límites internos y adaptadores externos."])
+    section(doc, "5. Seguridad y privacidad", bullets=[
+        "Autorización por rol y pertenencia al recurso en cada operación.",
+        "MFA para administración; cifrado y secretos fuera del código.",
+        "Archivos privados, URLs breves, validación y análisis antimalware.",
+        "Webhooks firmados, idempotencia y conciliación de pagos.",
+        "Rate limiting, protección contra enumeración y auditoría.",
+        "Minimización, retención, borrado y respaldos probados.",
+        "Geolocalización aproximada para búsqueda y exacta solo al contratar.",
+    ])
+    section(doc, "6. MVP académico", ["Puede usar una API local o de desarrollo, datos ficticios y adaptadores simulados. Los contratos deben permitir reemplazar pagos, mensajería, identidad y almacenamiento sin reescribir reglas del dominio."])
+    section(doc, "7. Decisiones pendientes", bullets=[
+        "Proveedor de identidad y pagos con soporte en Chile.",
+        "Nube, región, costos y objetivos de disponibilidad.",
+        "Retención legal de credenciales y datos financieros.",
+        "Mensajería en tiempo real o asincrónica según validación.",
+    ])
+    save(doc, "03_FIX_AND_GO_Modelo_Dominio_Arquitectura.docx", title, "Modelo y arquitectura técnica")
+
+
+def build_roadmap():
+    title = "Roadmap y Plan de Validación"
+    doc = configure(title)
+    cover(doc, title, "Alcance, tiempo, costos, interesados, financiamiento y validación", "FGO-PLAN-001")
+    section(doc, "1. Estrategia", ["El orden reduce incertidumbre: problema y confianza antes que tecnología costosa; recorrido antes que integración; piloto controlado antes que expansión."])
+    table(doc, ["Fase", "Trabajo", "Salida"], [
+        ("0. Evidencia", "Entrevistas, categorías, verificación, comisión", "Hipótesis medibles y alcance"),
+        ("1. Prototipo", "Flujos de cliente, profesional y administrador", "Usabilidad y lenguaje corregidos"),
+        ("2. MVP", "Recorrido completo con simulaciones", "Demo reproducible y probada"),
+        ("3. Piloto", "Integraciones, seguridad, soporte y cumplimiento", "Operación cerrada y monitoreada"),
+        ("4. Aprendizaje", "Métricas, costos, disputas y satisfacción", "Decisión de iterar o escalar"),
+        ("5. Escala", "Geografía, oferta y nuevas categorías", "Crecimiento con controles"),
+    ], [1.1, 3.5, 2.2])
+    section(doc, "2. Alcance controlado", bullets=[
+        "Incluye cliente, profesional y administrador; gas, electricidad y agua; búsqueda, perfiles, solicitud, cotización, seguimiento, mensajería, pago/verificación simulados y evaluación.",
+        "Excluye operación pública, dinero o documentos reales, GPS productivo, tiendas de aplicaciones, nuevas categorías, automatización avanzada y microservicios.",
+        "Todo cambio debe declarar beneficio, horas, costo, riesgo y trabajo equivalente que se retirará.",
+    ])
+    section(doc, "3. Cronograma y capacidad")
+    table(doc, ["Semanas", "Objetivo", "Evidencia"], [
+        ("1–2", "Definición, interesados y entrevistas", "Alcance y riesgos"),
+        ("3–4", "Requisitos, flujos y prototipo", "Backlog y prueba UX"),
+        ("5–6", "Arquitectura, datos y entorno", "ADR y base integrada"),
+        ("7–10", "Perfiles, búsqueda, solicitud y cotización", "Primer flujo vertical"),
+        ("11–13", "Servicio e integraciones simuladas", "MVP end-to-end"),
+        ("14–15", "Calidad, accesibilidad y seguridad", "Reportes y correcciones"),
+        ("16–18", "Validación, estabilización y cierre", "Evidencia y presentación"),
+    ], [1.1, 3.6, 2.1])
+    section(doc, "4. Presupuesto y financiamiento", [
+        "La línea base supone 18 semanas, tres estudiantes y 8 horas semanales por persona: 432 horas-persona brutas. Se reserva 15 %, dejando aproximadamente 367 horas planificables. El equipo debe recalibrar este supuesto con registros reales.",
+        "El MVP se financia con tiempo, computadores, conectividad y herramientas gratuitas o educativas. El desembolso base es $0 y el techo propuesto es $150.000 CLP: hasta $30.000 en nube, $25.000 en publicación opcional, $60.000 en pruebas y $35.000 de contingencia. Todo gasto superior a $20.000 requiere acuerdo de los tres.",
+        "Los $6.500.000 del material original corresponden a un escenario comercial por validar, no al costo del Capstone. Un piloto posterior podrá evaluar aporte de fundadores, alianzas, fondos de emprendimiento o inversión temprana con un presupuesto independiente.",
+    ])
+    section(doc, "5. Gestión de interesados")
+    table(doc, ["Interesado", "Estrategia", "Información"], [
+        ("Equipo", "Gestionar de cerca", "Tareas, riesgos y decisiones semanales"),
+        ("Docente/evaluadores", "Gestionar de cerca", "Evidencia y cumplimiento por hito"),
+        ("Clientes", "Involucrar", "Prototipo, privacidad y hallazgos"),
+        ("Profesionales", "Involucrar", "Verificación, comisión y flujo"),
+        ("Soporte futuro", "Consultar", "Carga operativa e incidentes"),
+        ("Proveedores/reguladores", "Mantener satisfechos", "Requisitos, límites y cumplimiento"),
+        ("Inversionistas", "Informar con evidencia", "Métricas, costos y riesgos"),
+        ("Competidores", "Monitorear", "Propuesta y cambios de mercado"),
+    ], [1.6, 2.1, 3.1])
+    section(doc, "6. Gobierno y comunicación", bullets=[
+        "Planificación semanal y seguimiento breve dos veces por semana.",
+        "Revisión demostrable quincenal y revisión de riesgos/costos.",
+        "Benjamín lidera frontend y prototipado; backend/datos y calidad/documentación se asignan entre Daniel y Felipe en la semana 2.",
+        "Cada entregable tiene responsable y revisor distinto.",
+        "Alcance, dinero, publicación y uso de datos reales requieren acuerdo de los tres.",
+    ])
+    section(doc, "7. Validaciones prioritarias", bullets=[
+        "Entrevistas separadas con clientes y profesionales.",
+        "Prueba de confianza antes/después de mostrar credenciales y reseñas.",
+        "Test de comparación de cotizaciones y comprensión del precio.",
+        "Disposición profesional a una comisión del 20 %.",
+        "Proceso manual de revisión de credenciales por categoría.",
+        "Modelo financiero con costos variables y crecimiento mensual.",
+    ])
+    section(doc, "8. Métricas", bullets=[
+        "Finalización del recorrido sin ayuda y tiempo por etapa.",
+        "Conversión solicitud → cotización → aceptación → cierre.",
+        "Tiempo de respuesta profesional y cumplimiento de agenda.",
+        "Cancelación, disputa, reembolso y repetición.",
+        "Costo de adquisición, soporte y verificación.",
+        "Ingreso neto por servicio y margen de contribución.",
+    ])
+    section(doc, "9. Calidad del MVP", bullets=[
+        "Tres recorridos de categoría inicial y tres roles demostrables.",
+        "Permisos, transiciones, comisión y reputación cubiertos por pruebas.",
+        "Accesibilidad, responsive y estados de error verificados.",
+        "Simulaciones visibles; cero datos personales y secretos.",
+        "Documentación y trazabilidad actualizadas.",
+    ])
+    section(doc, "10. Riesgos y respuesta")
+    table(doc, ["Riesgo", "Respuesta inicial"], [
+        ("Baja adopción", "Entrevistas, prototipo y piloto geográfico acotado"),
+        ("Poca oferta", "Incorporación manual y categorías limitadas"),
+        ("Fraude", "Verificación, permisos, auditoría y límites"),
+        ("Disputas", "Estados claros, evidencia y soporte definido"),
+        ("Costo", "Monolito modular, servicios gestionados y presupuesto por etapa"),
+        ("Alcance", "No ampliar categorías antes de validar el núcleo"),
+    ], [2.0, 4.8])
+    section(doc, "11. Hito académico", ["La referencia propone un MVP hacia la semana 18. El equipo debe reconciliar ese objetivo con el calendario oficial de APT122 y trabajar en incrementos quincenales demostrables."])
+    callout(doc, "REGLA DE CIERRE", "La fase no termina por cantidad de pantallas: termina cuando la evidencia demuestra que el recorrido es comprensible, seguro en su simulación y coherente con el problema.", trailing=False)
+    save(doc, "04_FIX_AND_GO_Roadmap_Plan_Validacion.docx", title, "Roadmap y validación")
 
 
 if __name__ == "__main__":
     build_index()
     build_master()
     build_functional()
-    build_domain()
+    build_architecture()
     build_roadmap()
     print(f"Generated 5 DOCX files in {OUT}")

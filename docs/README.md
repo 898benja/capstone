@@ -1,26 +1,24 @@
-# Documentación de RUAHTONE
+# Documentación de Fix & Go
 
-## Fuentes de verdad
+## Orden de autoridad
 
-La documentación se usa en este orden cuando exista una contradicción:
+1. [Fuente oficial consolidada](00-official-source.md).
+2. ADR aceptados en [`decisions/`](decisions/README.md).
+3. Requisitos e invariantes de producto.
+4. UX, arquitectura, roadmap y calidad.
+5. Implementación actual, mientras se reconcilia con los documentos.
 
-1. Decisiones aceptadas en `docs/decisions/`.
-2. Requisitos e invariantes de `02-product-requirements.md` y `03-domain-model.md`.
-3. Visión y alcance de `01-product-brief.md`.
-4. Arquitectura, UX, roadmap y calidad.
-5. Implementación actual, si todavía no se ha reconciliado con los documentos anteriores.
-
-Una decisión no debe cambiarse silenciosamente. Si afecta el modelo, el alcance, una dependencia importante o un principio de UX, se registra mediante un ADR y se actualizan los documentos afectados en el mismo cambio.
+La fuente oficial consolida la información entregada por el equipo en el documento FIX&GO y la presentación Canva. Los elementos sin respaldo suficiente se mantienen como hipótesis o datos por validar; no se convierten en hechos por repetición.
 
 ## Convenciones
 
-- Los términos del dominio se escriben en español en producto y UX.
-- Los nombres de tipos y código se escriben en inglés.
-- **Debe** expresa una condición obligatoria; **puede** expresa una opción.
-- Cada requisito estable tiene un identificador para poder referenciarlo desde issues y pruebas.
-- El estado documental se clasifica como `Propuesto`, `Aceptado`, `Reemplazado` u `Obsoleto`.
+- **Debe** indica una condición obligatoria; **puede**, una opción.
+- Los requisitos estables usan identificadores trazables.
+- Los estados documentales son `Propuesto`, `Aceptado`, `Reemplazado` u `Obsoleto`.
+- “Visión de producto” describe la solución final; “MVP académico” describe lo demostrable durante APT122.
+- Los montos se expresan en pesos chilenos (CLP) y requieren fecha y supuesto.
 
 ## Mantenimiento
 
-La documentación se revisa al cerrar cada hito. Una funcionalidad no se considera terminada si cambia el comportamiento acordado y su documentación no fue actualizada.
+Los documentos se revisan al cerrar cada hito. Una funcionalidad no se considera terminada si contradice una decisión vigente o deja documentación y pruebas desactualizadas.
 

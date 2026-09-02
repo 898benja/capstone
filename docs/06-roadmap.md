@@ -1,75 +1,76 @@
-# Roadmap del MVP
+# Roadmap
 
 **Estado:** Propuesto  
-**Estrategia:** incrementos verticales demostrables
+**Estrategia:** reducir primero el riesgo de problema, confianza y operación.
 
-## Fase 0 — Fundaciones
+## Fase 0 — Definición y evidencia
 
-- Inicializar stack, calidad, router y temas.
-- Implementar tipos de dominio, seed coherente, store versionado y reset.
-- Crear shell responsive, cambio de contexto y permisos base.
+- Consolidar fuente oficial y alcance.
+- Entrevistar clientes y profesionales de gas, electricidad y agua.
+- Mapear verificación, disputas y regulación por categoría.
+- Contrastar comisión del 20 % y supuestos financieros.
 
-**Salida:** aplicación ejecutable con datos persistentes, navegación y tema.
+**Salida:** problema validado, segmentos priorizados y supuestos medibles.
 
-## Fase 1 — Servicio vertical
+## Fase 1 — Prototipo de experiencia
 
-- Inicio contextual de servidor y líder.
-- Listado y Centro del Servicio.
-- Asignaciones, confirmación personal y contadores derivados.
-- Actividad para cambios de asistencia.
+- Diseñar recorridos de cliente, profesional y administrador.
+- Probar lenguaje de confianza, privacidad y verificación.
+- Validar solicitud y comparación de cotizaciones.
 
-**Salida:** un servidor confirma y un líder observa el cambio persistido.
+**Salida:** prototipo navegable corregido con evidencia de usuarios.
 
-## Fase 2 — Repertorio y preparación
+## Fase 2 — MVP académico
 
-- Biblioteca y detalle de canción.
-- `ServiceSong`, tonalidad contextual, notas y orden accesible.
-- Recursos relacionados y checklists contextuales.
-- Actividad para cada cambio relevante.
+- Implementar identidad simulada y permisos por rol.
+- Construir perfiles, categorías, búsqueda y solicitudes.
+- Incorporar cotizaciones, servicio, mensajería y reputación simuladas.
+- Representar revisión documental y pago sin datos ni dinero reales.
+- Cubrir recorridos de gas, electricidad y agua.
 
-**Salida:** el flujo principal funciona hasta recursos y checklist sin alterar el tono original.
+**Salida:** demostración end-to-end reproducible con datos ficticios.
 
-## Fase 3 — Operación transversal
+## Fase 3 — Preparación de piloto
 
-- Crear, editar y duplicar servicios.
-- Calendario con acceso al Centro.
-- Búsqueda global.
-- Personas, ministerios, estados vacíos y configuración demo.
+- Seleccionar proveedores de identidad, pago, nube y notificaciones.
+- Implementar backend seguro, auditoría, respaldos y soporte.
+- Definir términos, privacidad, gestión de incidentes y disputas.
+- Incorporar un grupo pequeño de profesionales revisados manualmente.
 
-**Salida:** flujo principal completo, incluida duplicación con confirmaciones reiniciadas.
+**Salida:** piloto cerrado, monitoreado y con criterios de detención.
 
-## Fase 4 — Sonido y servicios especiales
+## Fase 4 — Piloto controlado
 
-- Dashboard de sonido.
-- Patch, P16, escena, prueba de sonido y checklists técnicos.
-- Comparación con servicio anterior.
-- Presentación simplificada para pastor.
+- Operar en una zona y categorías acotadas.
+- Medir conversión, cumplimiento, cancelación, disputas y satisfacción.
+- Validar costos de adquisición, soporte y verificación.
+- Ajustar comisión y procesos con datos reales.
 
-**Salida:** flujos de sonido y pastor completos.
+**Salida:** decisión fundamentada de iterar, ampliar o detener.
 
-## Fase 5 — Endurecimiento y validación
+## Fase 5 — Escala
 
-- Pruebas automatizadas críticas y recorrido manual de los cuatro flujos.
-- Accesibilidad, responsive, dark mode y reduced motion.
-- Corrección de estados inconsistentes, errores de consola y rendimiento perceptual.
-- Guion y registro de pruebas con usuarios reales.
+- Expandir geografía y oferta de profesionales.
+- Automatizar controles de bajo riesgo sin eliminar revisión necesaria.
+- Evaluar nuevas categorías de manera independiente.
+- Optimizar confiabilidad, costos y prevención de fraude.
 
-**Salida:** build sin errores y candidato de validación local.
+## Cronograma Capstone de referencia
 
-## Backlog posterior a validación
+| Semanas | Objetivo | Evidencia |
+| --- | --- | --- |
+| 1–2 | definición, interesados y entrevistas | acta de alcance e instrumentos |
+| 3–4 | requisitos, flujos y prototipo | backlog priorizado y prueba de UX |
+| 5–6 | arquitectura, datos y preparación | ADR, modelo y ambiente ejecutable |
+| 7–10 | búsqueda, perfiles, solicitudes y cotizaciones | primer recorrido integrado |
+| 11–13 | servicio, mensajería, verificación, pago y reputación simulados | recorrido end-to-end |
+| 14–15 | pruebas, accesibilidad y seguridad conceptual | reportes y correcciones |
+| 16 | validación con usuarios | resultados y decisiones |
+| 17 | estabilización y documentación | candidato final |
+| 18 | presentación y cierre | repositorio, demo y evidencias |
 
-Backend, autenticación, multi-iglesia, multi-sede, almacenamiento cloud, notificaciones, roles configurables, analítica, aplicaciones móviles, suscripciones e integraciones. Ningún elemento entra al MVP sin evidencia de validación y una decisión explícita de alcance.
+El cronograma se alinea con el hito de semana 18 del material de referencia, pero debe ajustarse al calendario oficial de APT122.
 
-## Definición de terminado por funcionalidad
+## Definición de terminado
 
-Una historia está terminada cuando:
-
-- cumple requisitos y permisos aplicables;
-- contempla éxito, vacío, error y confirmación cuando corresponde;
-- persiste y rehidrata correctamente;
-- genera actividad si modifica información operacional relevante;
-- funciona con teclado y en desktop/móvil;
-- posee pruebas proporcionales al riesgo;
-- no introduce errores TypeScript, consola o datos demo inconsistentes;
-- actualiza documentación si cambió una decisión o contrato.
-
+Una historia está terminada cuando cumple criterios de aceptación, permisos, accesibilidad, estados de error, pruebas proporcionales al riesgo, trazabilidad y documentación. Una simulación está terminada solo si el usuario puede reconocer que no es una operación real.

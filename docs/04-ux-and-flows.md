@@ -1,109 +1,77 @@
-# Experiencia, navegación y flujos
+# Experiencia y flujos
 
-**Estado:** Propuesto para diseño detallado
+**Estado:** Propuesto
+
+## Principios de experiencia
+
+- Confianza antes que velocidad aparente.
+- El siguiente paso siempre es visible.
+- La verificación se explica; no se reduce a un ícono ambiguo.
+- Precio, alcance, fecha y condiciones se confirman antes de aceptar.
+- Los estados críticos combinan color, texto e icono.
+- La interfaz distingue simulaciones académicas de capacidades reales.
 
 ## Arquitectura de información
 
-Rutas base:
+### Cliente
 
-| Ruta | Destino |
-| --- | --- |
-| `/` | Inicio contextual |
-| `/services` | Servicios |
-| `/services/:serviceId` | Centro del Servicio |
-| `/calendar` | Calendario |
-| `/songs` | Biblioteca de canciones |
-| `/songs/:songId` | Detalle de canción |
-| `/people` | Personas |
-| `/resources` | Recursos |
-| `/ministries` | Ministerios |
-| `/sound` | Preparación de sonido |
-| `/settings` | Configuración |
+Inicio, Buscar, Solicitudes, Servicios, Mensajes, Pagos simulados, Perfil y Ayuda.
 
-El Centro del Servicio es el destino canónico desde dashboard, calendario, búsqueda, notificaciones e historial. No se crean variantes desconectadas de la misma pantalla.
+### Profesional
 
-## Jerarquía de una pantalla
+Inicio, Oportunidades, Cotizaciones, Agenda, Servicios, Mensajes, Credenciales, Reputación y Perfil.
 
-1. Qué está pasando.
-2. Qué necesita saber el usuario.
-3. Qué debe hacer ahora.
-4. Información secundaria y trazabilidad.
+### Administrador
 
-Cada pantalla posee una acción principal. Los estados vacíos explican qué ocurrirá y ofrecen el siguiente paso. Las simulaciones deben comunicar su alcance.
+Resumen, Verificaciones, Usuarios, Servicios, Pagos, Disputas, Reportes y Auditoría.
 
-## Inicio por contexto
+## Flujo principal del cliente
 
-| Contexto | Prioridad | Acción primaria |
-| --- | --- | --- |
-| Servidor/músico | próximo servicio, asistencia, canciones, cambios, ensayo | responder asistencia |
-| Líder | próximo servicio, confirmaciones, repertorio, pendientes | gestionar servicio |
-| Sonido | próximo servicio, cambios técnicos, checklist, P16 y patch | continuar preparación |
-| Pastor | estado, ministerios, alertas y observaciones | abrir servicio |
-| Administrador | servicios, ministerios, personas y estado general | crear servicio |
+1. Selecciona gas, electricidad o agua.
+2. Indica zona, urgencia y una descripción segura del problema.
+3. Revisa profesionales y entiende por qué están verificados.
+4. Abre un perfil y compara reputación, cobertura y disponibilidad.
+5. Crea la solicitud y recibe cotizaciones.
+6. Compara alcance, precio, fecha y condiciones.
+7. Acepta una cotización y revisa el resumen antes de confirmar.
+8. Sigue el servicio, conversa dentro del contexto y confirma el cierre.
+9. Evalúa al profesional desde el servicio completado.
 
-El cambio de contexto modifica menú, dashboard, permisos y acciones; no es un filtro cosmético.
+## Flujo del profesional
 
-## Centro del Servicio
+1. Completa perfil, especialidades y zona de cobertura.
+2. Presenta credenciales y observa su estado de revisión.
+3. Define disponibilidad.
+4. Revisa una oportunidad compatible y solicita aclaraciones si corresponde.
+5. Envía una cotización con alcance y condiciones.
+6. Gestiona agenda, ejecución y evidencias del servicio.
+7. Marca el trabajo como finalizado y espera confirmación o resolución.
+8. Consulta el desglose de pago y reputación.
 
-El encabezado muestra nombre, fecha, horario, lugar, tipo, estado y acción principal. El contenido ofrece una síntesis antes del detalle:
+## Flujo del administrador
 
-- ministerios con confirmados sobre asignados;
-- personas, función y asistencia;
-- repertorio ordenado con tonalidad contextual;
-- recursos relacionados;
-- checklists y progreso;
-- alertas y observaciones;
-- actividad reciente.
+1. Abre la cola de credenciales y prioriza vencimientos o riesgo.
+2. Revisa evidencia sin descargarla innecesariamente.
+3. Aprueba, rechaza o solicita corrección con motivo.
+4. Atiende reportes o disputas desde una vista cronológica.
+5. Ejecuta acciones reversibles y deja auditoría.
 
-En móvil, la síntesis, la confirmación y el repertorio aparecen antes de las áreas administrativas.
+## Estados de interfaz obligatorios
 
-## Navegación adaptativa
+Cada pantalla crítica contempla carga, vacío, error, sin conexión, permiso insuficiente y éxito. Las operaciones de pago o revisión muestran estado pendiente y evitan dobles envíos.
 
-La barra lateral se expande o colapsa en desktop. En móvil se convierte en navegación inferior o drawer; la decisión final se toma durante prototipado según la cantidad de destinos por contexto. Las rutas siguen siendo estables aunque un destino no aparezca en el menú de un rol.
+## Diseño visual
 
-## Flujos de aceptación
+La identidad usa amarillo como acento de acción y azul oscuro para confianza y estructura. Se evita saturar cada pantalla con amarillo. La tipografía debe ser legible, los controles táctiles de al menos 44 × 44 px y la jerarquía consistente en móvil y web.
 
-### Flujo principal
+## Validación de usabilidad
 
-1. Abrir Inicio y reconocer el próximo servicio.
-2. Abrir su Centro y consultar asignaciones.
-3. Como servidor, confirmar la propia asistencia.
-4. Cambiar a líder y comprobar el contador actualizado.
-5. Abrir una canción, observar su tono original y volver al servicio.
-6. Cambiar solo el tono del `ServiceSong` y verificar que el original permanece.
-7. Asociar un recurso, completar una tarea y comprobar la actividad.
-8. Abrir el servicio desde Calendario.
-9. Duplicarlo, cambiar la fecha y comprobar confirmaciones pendientes.
+Las pruebas moderadas deben observar si el usuario:
 
-### Flujo de sonido
-
-1. Cambiar a contexto Sonido y reconocer el próximo servicio.
-2. Consultar músicos, cambios desde el servicio anterior, P16 y patch.
-3. Revisar la prueba de sonido y completar preparación.
-4. Comprobar el nuevo progreso en la vista y dashboard.
-
-### Flujo líder de adoración
-
-1. Abrir servicio y reconocer quién falta por confirmar.
-2. Agregar canción, reordenarla por drag and drop y mediante fallback.
-3. Cambiar tonalidad, agregar nota y asociar PDF.
-4. Comprobar cada cambio en actividad.
-
-### Flujo pastor
-
-1. Reconocer preparación general, alertas y ministerios desde Inicio.
-2. Abrir el servicio y comprender su estado sin entrar a configuración técnica.
-
-## Principios visuales
-
-- Identidad tranquila, tecnológica y elegante; cristiana sin clichés gráficos.
-- Base neutral con azul y morado como acentos controlados.
-- Inter como tipografía inicial y escala compacta, legible y consistente.
-- Dark mode diseñado con jerarquía propia, no como simple inversión.
-- Movimiento sutil para navegación, cambios de estado, modales, toasts y reordenamiento.
-- No abusar de gradientes, sombras, glassmorphism ni texto gigante.
-
-## Accesibilidad
-
-La experiencia admite teclado, foco visible, controles de al menos 44 × 44 px cuando sean táctiles, contraste WCAG AA y mensajes textuales para estados. El reordenamiento nunca depende exclusivamente de arrastrar. `prefers-reduced-motion` desactiva movimiento no esencial.
+- diferencia profesional “verificado” de perfil simplemente completo;
+- entiende qué información será compartida y cuándo;
+- compara cotizaciones sin ayuda;
+- reconoce el estado actual y siguiente paso;
+- identifica que los pagos y mensajes del prototipo son simulados;
+- completa el recorrido sin depender de explicación del facilitador.
 

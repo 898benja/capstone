@@ -1,51 +1,39 @@
-# Contribuir a RUAHTONE
+# Contribuir a Fix & Go
 
 ## Flujo de trabajo
 
 1. Elegir un requisito o historia con criterio de aceptación claro.
-2. Crear una rama con prefijo `codex/` para trabajo realizado desde Codex, o `feat/`, `fix/`, `docs/` para trabajo humano acordado.
-3. Implementar el incremento más pequeño que recorra UI, caso de uso, dominio y persistencia cuando corresponda.
-4. Ejecutar verificaciones locales y recorrer el flujo afectado.
-5. Abrir un PR pequeño con evidencia y riesgos conocidos.
+2. Crear una rama breve con prefijo `feat/`, `fix/`, `docs/`, `test/` o `chore/`.
+3. Implementar el incremento más pequeño que atraviese interfaz, caso de uso, dominio y datos cuando corresponda.
+4. Ejecutar verificaciones automáticas y recorrer manualmente el flujo afectado.
+5. Abrir un pull request con evidencia, riesgos y relación con los requisitos.
 
-## Convenciones de commits
-
-Se recomienda Conventional Commits:
+## Convención de commits
 
 ```text
-feat(services): add personal attendance confirmation
-fix(songs): preserve original key when editing a service song
-docs(domain): clarify resource ownership invariant
+feat(requests): create service request flow
+fix(payments): prevent duplicate release action
+docs(product): clarify professional verification scope
+test(reputation): cover completed-service review rule
 ```
 
 ## Pull requests
 
-El PR debe indicar:
+Cada PR debe indicar el problema, requisitos relacionados, comportamiento antes y después, pruebas, capturas si cambia la interfaz, impacto en datos o seguridad, limitaciones y trabajo posterior.
 
-- problema que resuelve y requisitos relacionados;
-- comportamiento antes y después;
-- pruebas automáticas y manuales ejecutadas;
-- capturas para cambios visuales relevantes;
-- impacto en LocalStorage o migración;
-- accesibilidad y responsive revisados;
-- limitaciones o trabajo posterior.
+No se incluyen datos personales reales, credenciales, direcciones, documentos de identidad ni llaves de servicios externos. Los secretos se almacenan fuera del repositorio.
 
-No mezclar refactors amplios con una funcionalidad salvo que sean imprescindibles.
+## Convenciones técnicas
 
-## Código
+- Reglas de negocio fuera de componentes visuales.
+- TypeScript estricto y sin `any` injustificado.
+- Identificadores de código en inglés; textos visibles en español de Chile.
+- Estados derivados no se duplican en la base de datos.
+- Toda operación sensible valida permisos en el backend, no solo en la interfaz.
+- Integraciones de pago, mensajería y verificación se abstraen mediante adaptadores.
+- Un cambio de arquitectura, alcance o seguridad requiere un ADR.
 
-- Mantener reglas del negocio fuera de componentes.
-- Preferir funciones puras y selectores para datos derivados.
-- No duplicar entidades relacionadas en el estado.
-- Evitar `any`, IDs mágicos, estadísticas hardcodeadas y acceso directo a LocalStorage.
-- Toda acción que cambia preparación relevante debe evaluar si genera actividad.
-- Los textos visibles se escriben en español de Chile; los identificadores de código, en inglés.
+## Documentación
 
-## Decisiones
-
-Crear un ADR cuando el cambio afecte arquitectura, modelo, alcance, persistencia, seguridad conceptual o una dependencia estructural. Copiar la plantilla de `docs/decisions/000-template.md`, asignar el siguiente número y enlazar documentos impactados.
-
-## Seguridad y datos
-
-El MVP contiene únicamente datos ficticios. No agregar teléfonos, archivos ni información real de miembros. LocalStorage no es almacenamiento seguro y la interfaz no debe presentarlo como tal.
+La fuente principal es [docs/00-official-source.md](docs/00-official-source.md). Si cambia una decisión, el mismo PR debe actualizar requisitos, modelo, arquitectura y pruebas afectados.
 

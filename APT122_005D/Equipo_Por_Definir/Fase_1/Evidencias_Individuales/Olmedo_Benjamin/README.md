@@ -1,6 +1,6 @@
 # Evidencias individuales — Benjamín Olmedo
 
-Estado: completos y revisados para el proyecto Fix & Go.
+Estado: completos y revisados para la definición oficial de Fix & Go, incluyendo la separación entre visión comercial y MVP académico.
 
 Archivos:
 

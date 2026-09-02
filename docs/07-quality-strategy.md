@@ -2,56 +2,63 @@
 
 **Estado:** Propuesto
 
-## Pirámide de pruebas
+## Prioridades
 
-### Dominio y unidades
+1. Proteger identidad, documentos, ubicación, mensajes y pagos.
+2. Mantener transiciones y cálculos consistentes.
+3. Evitar promesas engañosas de verificación o seguridad.
+4. Garantizar un recorrido comprensible y accesible.
+5. Detectar fallos antes de afectar una operación real.
 
-Prioridad alta para invariantes y cálculos:
+## Pruebas de dominio
 
-- un cambio en `ServiceSong.key` no modifica `Song.originalKey`;
-- confirmar modifica una sola asignación;
-- contadores y progreso coinciden con entidades reales;
-- duplicar reinicia asistencia y mantiene solo la estructura elegida;
-- recursos y checklists respetan sus relaciones mínimas;
-- detección de conflictos horarios;
-- permisos por contexto;
-- migración, hidratación y reset del store.
+- una sola cotización aceptada por solicitud;
+- verificación derivada de credencial aprobada y vigente;
+- evaluaciones limitadas a servicios completados;
+- cálculo de comisión y monto neto;
+- pagos idempotentes;
+- transiciones válidas de solicitud, servicio, disputa y credencial;
+- permisos por actor y relación con el recurso;
+- exposición gradual de ubicación.
 
-### Integración de componentes
+## Integración
 
-Cubrir formularios, confirmaciones, cambio de contexto, reordenamiento alternativo, toasts, diálogos destructivos y actividad resultante. Se prueban resultados observables, no detalles internos.
+Probar base de datos, almacenamiento privado, proveedor de identidad, webhooks de pago, notificaciones y colas mediante dobles controlados y ambientes de prueba. Los contratos externos deben cubrir demora, duplicación, caída y reintento.
 
-### End to end
+## End to end
 
-Automatizar al menos los cuatro flujos descritos en [experiencia y flujos](04-ux-and-flows.md). Cada ejecución parte de seed conocido y recarga la página para verificar persistencia.
+- cliente crea solicitud y acepta cotización;
+- profesional presenta credencial, cotiza y completa servicio;
+- administrador revisa credencial y atiende una disputa;
+- pago simulado evita doble liberación;
+- participantes publican evaluación elegible.
 
-## Verificación manual
+## Seguridad
 
-- Navegar directamente y mediante enlaces a todas las rutas.
-- Recargar en cada ruta crítica.
-- Probar 360, 768, 1024 y 1440 px.
-- Probar temas claro y oscuro y preferencia de movimiento reducido.
-- Recorrer solo con teclado y comprobar orden de foco.
-- Revisar contraste, zoom a 200 % y textos extensos.
-- Confirmar estados vacío, error local, toast y diálogo.
-- Verificar cero errores importantes en consola.
+- análisis estático y de dependencias en CI;
+- pruebas de autorización por objeto y rol;
+- límites de velocidad y resistencia a enumeración;
+- carga de archivos maliciosos y tipos falsificados;
+- verificación de webhooks e idempotencia;
+- revisión de exposición en logs y analítica;
+- respaldo y restauración;
+- evaluación de amenazas antes del piloto.
 
-## Integridad de datos demo
+## Usabilidad y accesibilidad
 
-Un test de seed debe validar IDs únicos, referencias existentes, fechas válidas, órdenes coherentes y estadísticas derivadas. Ejemplos visuales como “6/7 confirmados” solo aparecen si existen siete asignaciones y seis confirmadas.
+Revisar 360, 768, 1024 y 1440 px; teclado; foco visible; contraste; zoom a 200 %; lectores de pantalla en recorridos críticos; estados de carga, vacío, error y conectividad limitada.
 
-## Pruebas con usuarios
+## Datos de prueba
 
-Cada sesión registra contexto del participante, tareas, tiempo, éxito sin ayuda, dudas, errores y comentarios. El facilitador evita explicar la interfaz. Los hallazgos se clasifican por impacto y frecuencia, no por preferencia estética aislada.
+Los datos son ficticios pero coherentes: identidades inventadas, credenciales marcadas como simuladas, direcciones no reales y pagos de entorno de prueba. Cada conjunto incluye casos felices, vencidos, rechazados y disputados.
 
-## Gate del candidato MVP
+## Gate del MVP académico
 
-- build de producción exitoso;
-- TypeScript, lint y suite automatizada sin fallos;
-- cuatro flujos completos;
-- persistencia y reset verificados;
-- dark/light y responsive verificados;
-- sin acciones principales falsas;
-- limitaciones simuladas documentadas;
-- requisitos críticos trazados a pruebas.
+- build, tipos y pruebas sin fallos;
+- tres recorridos por categoría inicial;
+- roles y permisos demostrables;
+- ninguna integración simulada se presenta como real;
+- cero secretos o datos personales en el repositorio;
+- documentación y matriz de requisitos actualizadas;
+- evidencia de pruebas con usuarios y hallazgos priorizados.
 

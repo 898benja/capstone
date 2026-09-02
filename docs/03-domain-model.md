@@ -1,176 +1,93 @@
 # Modelo de dominio
 
-**Estado:** Aceptado para implementación inicial
+**Estado:** Propuesto para el MVP
 
 ## Mapa conceptual
 
 ```mermaid
 erDiagram
-    Church ||--o{ Ministry : has
-    Church ||--o{ Person : has
-    Church ||--o{ Service : organizes
-    Person }o--o{ Ministry : serves_in
-    Service ||--o{ ServiceAssignment : schedules
-    Person ||--o{ ServiceAssignment : receives
-    Ministry ||--o{ ServiceAssignment : scopes
-    Service ||--o{ ServiceSong : includes
-    Song ||--o{ ServiceSong : contextualizes
-    Service ||--o{ Checklist : prepares
-    Ministry ||--o{ Checklist : owns
-    Person ||--o{ Checklist : may_own
-    Checklist ||--o{ ChecklistItem : contains
-    Service ||--o{ Activity : records
-    Resource }o--o{ Song : relates_to
-    Resource }o--o{ Service : relates_to
-    Resource }o--o{ Ministry : relates_to
-    Service ||--o| SoundConfiguration : may_define
-    SoundConfiguration ||--o{ PatchChannel : contains
-    SoundConfiguration ||--o{ MonitorAssignment : contains
+    USER ||--o| CLIENT_PROFILE : owns
+    USER ||--o| PROFESSIONAL_PROFILE : owns
+    PROFESSIONAL_PROFILE ||--o{ PROFESSIONAL_SPECIALTY : offers
+    SERVICE_CATEGORY ||--o{ PROFESSIONAL_SPECIALTY : classifies
+    PROFESSIONAL_PROFILE ||--o{ CREDENTIAL : submits
+    CLIENT_PROFILE ||--o{ SERVICE_REQUEST : creates
+    SERVICE_CATEGORY ||--o{ SERVICE_REQUEST : categorizes
+    SERVICE_REQUEST ||--o{ QUOTE : receives
+    PROFESSIONAL_PROFILE ||--o{ QUOTE : issues
+    QUOTE ||--o| SERVICE_JOB : becomes
+    SERVICE_JOB ||--o{ MESSAGE : contains
+    SERVICE_JOB ||--o{ PAYMENT : records
+    SERVICE_JOB ||--o{ REVIEW : enables
+    SERVICE_JOB ||--o{ DISPUTE : may_open
+    USER ||--o{ AUDIT_EVENT : performs
 ```
 
 ## Agregados
 
-### Church
+### Usuario y perfiles
 
-Raíz organizacional. En el MVP existe una iglesia demo, pero todas las entidades de negocio incluyen `churchId` para no bloquear multi-tenant futuro. La separación real entre tenants se implementará con el backend.
+`User` concentra identidad digital y estado de cuenta. `ClientProfile` y `ProfessionalProfile` modelan capacidades diferentes sin duplicar autenticación. Los privilegios administrativos se asignan explícitamente.
 
-### Service
+### Profesional y credenciales
 
-Agregado operacional principal. Contiene referencias a su preparación, no copias de personas o canciones. Sus métricas se calculan desde asignaciones, repertorio y checklists.
+La especialidad ofrecida se vincula a una categoría. `Credential` representa evidencia y decisión de revisión; el distintivo visible se deriva de credenciales aprobadas y vigentes.
 
-### Song y ServiceSong
+### Solicitud y cotización
 
-`Song` es la biblioteca global. `ServiceSong` es la interpretación contextual en un servicio. Esta frontera evita que un cambio de tonalidad local corrompa la biblioteca.
+`ServiceRequest` describe la necesidad del cliente sin publicarla de forma indiscriminada. `Quote` es la propuesta comercial del profesional. Una cotización aceptada origina un `ServiceJob` inmutablemente relacionado.
 
-### Person y User
+### Servicio
 
-`Person` representa a quien participa en la iglesia. `User` representa acceso e identidad digital. En el MVP demo pueden vincularse uno a uno, pero siguen siendo conceptos separados para permitir personas aún no registradas y futuras políticas de acceso.
+`ServiceJob` es el centro operacional: agenda, participantes, estado, mensajes, pagos, cierre, disputa y evaluación. No duplica el contenido histórico de solicitud o cotización.
 
-## Contratos TypeScript propuestos
+### Pago
 
-```ts
-type Id = string;
-type ISODateTime = string;
+`Payment` registra referencias y estados del proveedor; no contiene tarjeta. La comisión se guarda como desglose auditable del momento de la transacción.
 
-interface Entity {
-  id: Id;
-  churchId: Id;
-  createdAt: ISODateTime;
-  updatedAt: ISODateTime;
-}
+## Entidades mínimas
 
-interface Person extends Entity {
-  firstName: string;
-  lastName: string;
-  avatarUrl?: string;
-  phone?: string;
-  ministryIds: Id[];
-  role: "admin" | "pastor" | "leader" | "server" | "guest";
-  availability: AvailabilityRule[];
-  status: "active" | "inactive";
-}
+| Entidad | Datos principales |
+| --- | --- |
+| User | identidad, roles, estado, consentimiento |
+| ClientProfile | nombre visible y preferencias |
+| ProfessionalProfile | presentación, cobertura, disponibilidad, reputación derivada |
+| ServiceCategory | gas, electricidad, agua y requisitos |
+| Credential | tipo, emisor, vigencia, evidencia, estado, revisión |
+| ServiceRequest | cliente, categoría, descripción, zona, urgencia, disponibilidad, estado |
+| Quote | solicitud, profesional, alcance, precio, fecha, vigencia, estado |
+| ServiceJob | cotización, agenda, ubicación autorizada, estado y participantes |
+| Message | conversación, autor, contenido y fecha |
+| Payment | servicio, proveedor, montos, comisión, estado y referencia |
+| Review | servicio, autor, destinatario, puntuación y moderación |
+| Dispute | servicio, iniciador, motivo, evidencia, estado y resolución |
+| AuditEvent | actor, acción, objetivo, fecha y metadatos seguros |
 
-interface Service extends Entity {
-  name: string;
-  type: "worship" | "rehearsal" | "conference" | "youth" | "meeting" | "specialEvent";
-  startsAt: ISODateTime;
-  endsAt: ISODateTime;
-  location: string;
-  description?: string;
-  status: "planning" | "organizing" | "confirming" | "ready" | "completed" | "archived";
-  ministryIds: Id[];
-  relatedServiceId?: Id;
-  notes?: string;
-}
+## Estados principales
 
-interface ServiceAssignment extends Entity {
-  serviceId: Id;
-  personId: Id;
-  ministryId: Id;
-  functionName: string;
-  attendanceStatus: "pending" | "confirmed" | "declined" | "late";
-  attendanceUpdatedAt?: ISODateTime;
-  notes?: string;
-}
-
-interface Song extends Entity {
-  title: string;
-  author: string;
-  originalKey: MusicalKey;
-  defaultBpm?: number;
-  durationSeconds?: number;
-  timeSignature?: string;
-  tags: string[];
-}
-
-interface ServiceSong extends Entity {
-  serviceId: Id;
-  songId: Id;
-  order: number;
-  key: MusicalKey;
-  bpm?: number;
-  version?: string;
-  notes?: string;
-  enabled: boolean;
-}
-
-interface Resource extends Entity {
-  name: string;
-  type: "pdf" | "sheetMusic" | "chordChart" | "sequence" | "multitrack" |
-    "audio" | "video" | "image" | "document" | "other";
-  uri: string;
-  songIds: Id[];
-  serviceIds: Id[];
-  ministryIds: Id[];
-}
-
-interface Checklist extends Entity {
-  name: string;
-  serviceId?: Id;
-  ministryId?: Id;
-  personId?: Id;
-  phase?: "preparation" | "soundcheck" | "rehearsal" | "start" | "finish";
-}
-
-interface ChecklistItem extends Entity {
-  checklistId: Id;
-  title: string;
-  order: number;
-  completed: boolean;
-  completedByPersonId?: Id;
-  completedAt?: ISODateTime;
-}
-
-interface Activity extends Entity {
-  serviceId: Id;
-  actorPersonId: Id;
-  type: string;
-  entityType: string;
-  entityId: Id;
-  summary: string;
-  metadata?: Record<string, string | number | boolean | null>;
-}
-```
-
-`AvailabilityRule`, `MusicalKey`, configuraciones de sonido y permisos tendrán tipos propios; no se modelarán como texto libre cuando comiencen a gobernar comportamiento.
+| Concepto | Estados |
+| --- | --- |
+| Solicitud | `draft`, `published`, `quoted`, `assigned`, `cancelled`, `expired` |
+| Cotización | `draft`, `submitted`, `accepted`, `rejected`, `withdrawn`, `expired` |
+| Servicio | `scheduled`, `inProgress`, `awaitingClient`, `completed`, `cancelled`, `disputed` |
+| Credencial | `draft`, `submitted`, `underReview`, `approved`, `rejected`, `expired` |
+| Pago | `created`, `authorized`, `held`, `released`, `refunded`, `failed` |
+| Disputa | `open`, `underReview`, `resolved`, `rejected` |
 
 ## Invariantes
 
-1. `ServiceSong.songId` referencia una canción existente y su `key` nunca actualiza `Song.originalKey`.
-2. `ServiceAssignment` no duplica nombre, avatar ni nombre de ministerio.
-3. Solo el usuario asociado a `personId` puede cambiar su asistencia mediante la experiencia de servidor.
-4. Un `Resource` debe tener al menos una relación de dominio.
-5. Un `Checklist` debe tener al menos un propietario contextual: servicio, ministerio o persona.
-6. `order` es único dentro del repertorio o checklist correspondiente y se normaliza después de reordenar.
-7. Fechas se guardan como ISO 8601; presentación y zona horaria se resuelven en UI.
-8. Actividad es append-only desde la interfaz normal.
-9. Contadores y estados agregados se calculan; no se guardan como campos paralelos.
+1. Una cotización aceptada pertenece a la misma solicitud y profesional del servicio creado.
+2. Solo una cotización puede estar aceptada por solicitud.
+3. “Verificado” se deriva de evidencia aprobada y vigente para la especialidad.
+4. Solo los participantes de un servicio completado pueden evaluarse.
+5. El total de pago equivale al monto del profesional, comisión, impuestos y ajustes registrados.
+6. Una liberación o reembolso usa una clave idempotente y no puede duplicarse.
+7. La dirección exacta se expone únicamente a participantes autorizados y en la etapa necesaria.
+8. Una suspensión o moderación conserva motivo, actor y fecha.
+9. Archivos privados no son accesibles mediante URL pública permanente.
+10. Eliminaciones legales anonimizan lo permitido sin romper registros financieros obligatorios.
 
-## Política temporal
+## Frontera multiusuario
 
-El MVP opera en `America/Santiago` para los datos demo. La persistencia usa instantes ISO y la UI formatea según la configuración de iglesia. Esta decisión evita mezclar textos de fecha con valores operables.
-
-## Borrado e historial
-
-Se prefiere archivar servicios y desactivar personas para preservar referencias. El borrado físico de datos relacionados necesita una política explícita antes de implementarse. Restablecer datos demo es la excepción deliberada y reemplaza el store local completo tras confirmación.
+Toda consulta se limita por identidad, rol y relación con el recurso. El cliente ve sus solicitudes; el profesional, oportunidades autorizadas y sus trabajos; el administrador accede solo a las funciones de control asignadas. La interfaz no constituye una frontera de seguridad.
 
