@@ -57,19 +57,18 @@
 
 ## Cronograma Capstone de referencia
 
-| Semanas | Objetivo | Evidencia |
-| --- | --- | --- |
-| 1–2 | definición, interesados y entrevistas | acta de alcance e instrumentos |
-| 3–4 | requisitos, flujos y prototipo | backlog priorizado y prueba de UX |
-| 5–6 | arquitectura, datos y preparación | ADR, modelo y ambiente ejecutable |
-| 7–10 | búsqueda, perfiles, solicitudes y cotizaciones | primer recorrido integrado |
-| 11–13 | servicio, mensajería, verificación, pago y reputación simulados | recorrido end-to-end |
-| 14–15 | pruebas, accesibilidad y seguridad conceptual | reportes y correcciones |
-| 16 | validación con usuarios | resultados y decisiones |
-| 17 | estabilización y documentación | candidato final |
-| 18 | presentación y cierre | repositorio, demo y evidencias |
+| Semanas | Fechas 2026 | Trabajo y evidencia | Hito oficial |
+| --- | --- | --- | --- |
+| 1–4 | 10 ago.–5 sep. | Definición, competencias, objetivos y plan | Presentación Fase 1 en S4 |
+| 5–6 | 7–19 sep. | Ajustes, UX, arquitectura y datos | Actualización del plan en S6 |
+| 7–10 | 21 sep.–17 oct. | Búsqueda, perfiles, solicitud y cotización; pruebas | Entrega de avance en S10 |
+| 11–12 | 19–31 oct. | Seguimiento, cierre, valoración y simulaciones | Desarrollo integrado |
+| 13–14 | 2–14 nov. | Validación con usuarios, pruebas y correcciones | Preparación de entrega |
+| 15 | 16–21 nov. | MVP, informe y resultados | Entrega final de desarrollo |
+| 16 | 23–28 nov. | Retroalimentación, reflexión y ensayo | Inicio de Fase 3 |
+| 17–18 | 30 nov.–12 dic. | Defensa y demostración individual/grupal | Presentación final APT |
 
-El cronograma se alinea con el hito de semana 18 del material de referencia, pero debe ajustarse al calendario oficial de APT122.
+Fuente: `2026.02_Cronograma_Capstone_PTY4614.xlsx`, hoja `Cronogramas`, filas 2–19. Esta planificación no acredita hitos realizados. La revisión del 8 de septiembre corresponde a semana 5. Se conservan los nombres APT122 de los instrumentos y la sección registrada en el repositorio.
 
 ## Definición de terminado
 

@@ -68,17 +68,18 @@ Estas horas son un instrumento de control, no una declaración de horas efectiva
 
 ## 6. Cronograma
 
-| Semanas | Trabajo | Hito |
-| --- | --- | --- |
-| 1–2 | alcance, interesados, entrevistas y riesgos | definición aprobada |
-| 3–4 | requisitos, historias, navegación y prototipo | prueba de concepto UX |
-| 5–6 | arquitectura, datos, repositorio y automatización | base técnica integrada |
-| 7–10 | perfiles, búsqueda, solicitud y cotización | flujo vertical 1 |
-| 11–13 | servicio, mensajes, pago/verificación simulados y evaluación | MVP funcional |
-| 14–15 | pruebas, accesibilidad, privacidad y defectos | candidato de validación |
-| 16 | sesiones con usuarios y análisis | informe de hallazgos |
-| 17 | corrección, estabilización y documentación | candidato final |
-| 18 | ensayo, presentación y cierre | entrega Capstone |
+| Semanas | Fechas 2026 | Trabajo y evidencia | Hito oficial |
+| --- | --- | --- | --- |
+| 1–4 | 10 ago.–5 sep. | Definición, competencias, objetivos y plan | Presentación Fase 1 en S4 |
+| 5–6 | 7–19 sep. | Ajustes, UX, arquitectura y datos | Actualización del plan en S6 |
+| 7–10 | 21 sep.–17 oct. | Búsqueda, perfiles, solicitud y cotización; pruebas | Entrega de avance en S10 |
+| 11–12 | 19–31 oct. | Seguimiento, cierre, valoración y simulaciones | Desarrollo integrado |
+| 13–14 | 2–14 nov. | Validación con usuarios, pruebas y correcciones | Preparación de entrega |
+| 15 | 16–21 nov. | MVP, informe y resultados | Entrega final de desarrollo |
+| 16 | 23–28 nov. | Retroalimentación, reflexión y ensayo | Inicio de Fase 3 |
+| 17–18 | 30 nov.–12 dic. | Defensa y demostración individual/grupal | Presentación final APT |
+
+Fuente: `2026.02_Cronograma_Capstone_PTY4614.xlsx`, hoja `Cronogramas`, filas 2–19. Esta planificación no acredita hitos realizados. La revisión del 8 de septiembre corresponde a semana 5. Se conservan los nombres APT122 de los instrumentos y la sección registrada en el repositorio.
 
 ## 7. Presupuesto del MVP académico
 
@@ -141,7 +142,7 @@ Las decisiones permanentes quedan en GitHub; WhatsApp puede coordinar, pero no r
 ## 11. Organización y responsabilidades
 
 - Benjamín lidera frontend, prototipado y consistencia de experiencia.
-- El liderazgo de backend/datos y de calidad/documentación debe asignarse entre Daniel y Felipe durante la semana 2, con aceptación de ambos.
+- Asignación propuesta para ratificación: Daniel lidera backend, permisos y estados; Felipe lidera modelo de datos y consolidación de calidad. No se declara un acuerdo ya celebrado.
 - Las decisiones de alcance, dinero, publicación y uso de datos reales requieren acuerdo de los tres.
 - Cada entregable posee una persona responsable y al menos un revisor distinto.
 

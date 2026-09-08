@@ -40,7 +40,7 @@ Estas cifras son escenarios comerciales, no el presupuesto del Capstone ni resul
 
 ## Línea base del Capstone
 
-- Duración de planificación: 18 semanas, sujeta al calendario oficial de APT122.
+- Duración: 18 semanas, del 10 de agosto al 12 de diciembre de 2026 según cronograma PTY4614; entrega de desarrollo en semana 15 y defensa en semanas 17–18.
 - Equipo: tres estudiantes.
 - Capacidad de referencia: 8 horas semanales por integrante; 432 horas-persona brutas.
 - Reserva recomendada: 15 % de la capacidad; 367 horas-persona planificables.
@@ -87,3 +87,7 @@ La presentación de referencia menciona 6,6 millones de hogares, 198.157 instala
 ## Fuente y control de cambios
 
 Esta consolidación se basa únicamente en el documento “FIX&GO” y en la presentación Canva “final FIX&GO” entregados por el equipo. Se excluyeron residuos ajenos al proyecto visibles en la presentación y metadatos de otra asignatura presentes en la portada del Word.
+
+## Actualización de Fase 1 del 8 de septiembre de 2026
+
+El documento grupal `FIX_AND_GO_Fase_1_MVP.docx` reformula el original manteniendo su formato. La entrega inicial usa una aplicación web responsive para computadores y teléfonos; una aplicación nativa se posterga. El calendario PTY4614 suministrado prevalece sobre las fechas orientativas previas. Las autoevaluaciones distinguen definición documental de resultados de ejecución aún pendientes.
