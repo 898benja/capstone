@@ -26,4 +26,6 @@ El alcance acordado es una app funcional iOS/Android con Expo, API Django y SQLi
 
 [Guía 1.5 EVA 1 grupal](1.5_FIX_AND_GO_EVA1_Grupal.docx): versión que prevalece sobre las anteriores. Parte de la nueva guía adjunta, mantiene su tipografía y completa las cuatro filas de evidencias: definición/planificación de EVA 1; presentación y mejoras de EVA 1; avance S10; entrega final y defensa. EVA 1 abarca S1–4, requiere encargo con presentación y pondera 20% de la nota semestral. La retroalimentación se registrará cuando el docente entregue la rúbrica.
 
-Se incorpora el anexo metodológico mediante Kanban, visión, backlog, criterios de terminado, diseño, UML, pruebas, manual y Docker local para la API. Se mantienen app móvil, roles, responsables y presupuesto incremental de $0 CLP. Esta copia excluye los RUT; la copia oficial de entrega queda fuera del repositorio. La guía define evidencias esperadas y no certifica que la presentación, las pruebas o el desarrollo ya se hayan ejecutado.
+Se incorpora el anexo metodológico mediante Kanban, visión, backlog, criterios de terminado, diseño, UML, pruebas, manual y Docker local para la API. Se mantienen app móvil, roles, responsables y presupuesto incremental de $0 CLP. La tabla de antecedentes incluye los RUT por solicitud expresa del usuario. La guía define evidencias esperadas y no certifica que la presentación, las pruebas o el desarrollo ya se hayan ejecutado.
+
+Actualización de antecedentes: se completó la fila de RUT conservando el formato y el orden de los integrantes.
