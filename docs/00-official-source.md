@@ -1,5 +1,7 @@
 # Fuente oficial consolidada — Fix & Go
 
+> **Actualización de alcance del 8 de septiembre de 2026:** para la entrega de Fase 1 prevalece la [guía grupal 1.5 completada](../APT122_005D/Equipo_Por_Definir/Fase_1/Evidencias_Grupales/1.5_FIX_AND_GO_Definicion_APT_Grupal_MVP_Movil.docx). Define MVP móvil iOS/Android con Expo, Django REST Framework y SQLite en el Mac local, sin nube contratada; desembolso incremental previsto de $0 CLP. Benjamín asume toda la programación; Daniel, documentación y gestión; Felipe, pruebas manuales y evidencia audiovisual. La capacidad técnica propuesta es de 6 horas semanales en S5–15 (66 brutas, 56 planificadas y unas 10 de reserva). Entrega de desarrollo S15 y defensa S17–18. Las estimaciones anteriores de esta página y otros antecedentes no constituyen el presupuesto, capacidad ni arquitectura vigentes del MVP.
+
 **Estado:** Aceptado como base de planificación
 **Fecha de consolidación:** 2 de septiembre de 2026
 **Equipo:** Benjamín Olmedo, Daniel Baeza y Felipe Arce
