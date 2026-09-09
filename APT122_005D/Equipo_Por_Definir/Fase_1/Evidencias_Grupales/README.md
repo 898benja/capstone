@@ -2,12 +2,14 @@
 
 ## Disponible y actualizado
 
-- `Presentacion_Proyecto.pptx` — presentación oficial de Fix & Go.
+- [`FIX_AND_GO_Fase_1_Resumen.pptx`](FIX_AND_GO_Fase_1_Resumen.pptx) — presentación resumida de Fase 1 entregada por el equipo.
+- [`FIX_AND_GO_Fase_1_MVP_reformulado.docx`](FIX_AND_GO_Fase_1_MVP_reformulado.docx) — propuesta reformulada para el MVP móvil.
+- [`1.5_FIX_AND_GO_EVA1_Grupal.docx`](1.5_FIX_AND_GO_EVA1_Grupal.docx) — guía oficial de EVA 1 conservada bajo el nombre vigente del repositorio.
+- `Presentacion_Proyecto.pptx` — presentación anterior de Fix & Go, conservada como antecedente.
 
 ## Pendientes
 
 - `1.4_APT122_FormativaFase1.docx`
-- `1.5_GuiaEstudiante_Fase1_DefinicionProyecto_APT_Ingles.docx` — optativo
 - `Planilla_Evaluacion_Fase1.xlsx` — enviada por correo
 
 No se crean documentos académicos vacíos con extensión falsa. Los archivos reales deben agregarse cuando estén disponibles y deben utilizar la definición consolidada en `docs/00-official-source.md`.
