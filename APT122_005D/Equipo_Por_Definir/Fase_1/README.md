@@ -13,7 +13,7 @@ La [guía grupal EVA 1](Evidencias_Grupales/1.5_FIX_AND_GO_EVA1_Grupal.docx) def
 | Guía grupal 1.5 | Completada; incluye EVA 1, metodología, evidencias y calendario. |
 | Felipe y Daniel: 1.1 y 1.2 | Cuatro originales incorporados íntegramente. Sus diarios requieren ajustes de contexto y el campo Escuela de ambas 1.1 sigue genérico. |
 | Felipe y Daniel: 1.3 | Siguen describiendo RUAHTONE; pendientes de actualización personal. |
-| Benjamín: 1.1, 1.2 y 1.3 | Presentes. Revisar referencias al alcance responsive y presupuesto anterior frente a la guía móvil vigente. |
+| Benjamín: 1.1, 1.2 y 1.3 | 1.1 y 1.2 actualizadas con el perfil de egreso y el MVP móvil. La 1.3 aún requiere alinear alcance y presupuesto. |
 | Presentación | Existe una PPT anterior; requiere actualizar arquitectura, presupuesto, alcance y calendario antes de exponer. |
 | 1.4 formativa y planilla de evaluación | No incorporadas. Confirmar con el docente si corresponden al encargo del equipo o al registro de evaluación docente. |
 | Guía en inglés | Identificada como optativa en el inventario; no se trata como bloqueo obligatorio. |
